@@ -1,21 +1,29 @@
 // Using Methods
 
+Reverse a string: Write a function that takes a string as input and returns the string in reverse order. For example, if the input is "Hello, World!",
+  the output should be "!dlroW ,olleH".
+  
 function reverseString(str) {
   return str.split('').reverse().join('');
 }
 
+Find the largest number in an array: Write a function that takes an array of numbers as input and returns the largest number in the array. 
+For example, if the input is [3, 8, 2, 10, 5], the output should be 10.
 
 function findLargestNumber(arr) {
   return Math.max(...arr);
 }
 
-
+Check for Palindrome: Write a function that takes a string as input and checks if it is a palindrome. A palindrome is a word or phrase that reads the same 
+  forwards and backwards.  For example, if the input is "level", the output should be true.
+    
 function isPalindrome(str) {
   const reversed = str.split('').reverse().join('');
   return str === reversed;
 }
 
-
+FizzBuzz: Write a program that prints the numbers from 1 to 100. But for multiples of three, print "Fizz" instead of the number, and for the multiples of five, 
+  print "Buzz". For numbers that are multiples of both three and five, print "FizzBuzz".
 for (let i = 1; i <= 100; i++) {
   if (i % 3 === 0 && i % 5 === 0) {
     console.log('FizzBuzz');
@@ -28,6 +36,9 @@ for (let i = 1; i <= 100; i++) {
   }
 }
 
+Find the missing number: Given an array of numbers from 1 to N, where one number is missing, write a function to find the missing number. 
+  For example, if the input is [1, 2, 4, 5, 6], the output should be 3.
+
 function findMissingNumber(arr) {
   const n = arr.length + 1;
   const sum = (n * (n + 1)) / 2;
@@ -35,26 +46,34 @@ function findMissingNumber(arr) {
   return sum - arrSum;
 }
 
+Remove duplicates from an array: Write a function that takes an array as input and returns a new array with duplicate elements removed. 
+  For example, if the input is [1, 2, 2, 3, 4, 4, 5], the output should be [1, 2, 3, 4, 5].
 
 function removeDuplicates(arr) {
   return Array.from(new Set(arr));
 }
 
-
+Check for Anagrams: Write a function that takes two strings as input and checks if they are anagrams. Anagrams are two words or phrases 
+  that use the same letters in a different order. For example, if the inputs are "listen" and "silent", the output should be true.
+    
 function areAnagrams(str1, str2) {
   const sortedStr1 = str1.split('').sort().join('');
   const sortedStr2 = str2.split('').sort().join('');
   return sortedStr1 === sortedStr2;
 }
 
+Find the longest word: Write a function that takes a sentence as input and returns the longest word in the sentence. 
+  For example, if the input is "The quick brown fox jumps over the lazy dog", the output should be "jumps".
 
 function findLongestWord(sentence) {
   const words = sentence.split(' ');
   return words.reduce((longest, current) => (current.length > longest.length ? current : longest), '');
 }
 
+Check for Prime Number: Write a function that takes a number as input and checks if it is a prime number. 
+  A prime number is a number that is only divisible by 1 and itself. For example, if the input is 7, the output should be true.
 
-function isPrime(num) {
+  function isPrime(num) {
   if (num <= 1) return false;
   if (num <= 3) return true;
   if (num % 2 === 0 || num % 3 === 0) return false;
@@ -63,7 +82,8 @@ function isPrime(num) {
   }
   return true;
 }
-
+Count the occurrences of a character in a string: Write a function that takes a string and a character as input and 
+  returns the number of times the character appears in the string. For example, if the input is "hello", "l" the output should be 2.
 
 function countCharacterOccurrences(str, char) {
   const charRegExp = new RegExp(char, 'g');
@@ -72,7 +92,9 @@ function countCharacterOccurrences(str, char) {
 
 
 // Without using Methods
-
+Reverse Words in a String: Write a function that takes a sentence as input and returns the sentence with the words reversed.
+  For example, if the input is "Hello, World!", the output should be "World! Hello,".
+  
 function reverseString(str) {
   let reversed = '';
   for (let i = str.length - 1; i >= 0; i--) {
@@ -81,6 +103,59 @@ function reverseString(str) {
   return reversed;
 }
 
+Second Largest Number: Develop a function that finds the second largest number in an array of numbers. 
+  For example, if the input is [3, 8, 2, 10, 5], the output should be 8.
+
+function findSecondLargestNumber(arr) {
+  let firstLargest = arr[0];
+  let secondLargest = arr[1];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > firstLargest) {
+        secondLargest = firstLargest;
+      firstLargest = arr[i];
+    
+  } else if (arr[i] > secondLargest && arr[i] !== firstLargest) {    
+                    secondLargest = arr[i];       
+    }
+  }
+  return secondLargest;
+}
+
+const result= findSecondLargestNumber([3, 8, 2, 10, 5]);
+console.log(result);
+
+
+
+function findSecondLargest(arr) {
+    if (arr.length < 2) {
+        throw new Error("Array must contain at least two elements");
+    }
+
+    let largest = -Infinity;
+    let secondLargest = -Infinity;
+
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] > largest) {
+            secondLargest = largest;
+            largest = arr[i];
+        } else if (arr[i] > secondLargest && arr[i] !== largest) {
+            secondLargest = arr[i];
+        }
+    }
+
+    if (secondLargest === -Infinity) {
+        throw new Error("No second largest element found");
+    }
+
+    return secondLargest;
+}
+
+// Example usage:
+const numbers = [3, 8, 2, 10, 5];
+console.log(findSecondLargest(numbers)); // Output: 8
+
+
+// FIRST LARGEST NUMBER
 function findLargestNumber(arr) {
   let largest = arr[0];
   for (let i = 1; i < arr.length; i++) {
@@ -91,20 +166,25 @@ function findLargestNumber(arr) {
   return largest;
 }
 
+Check for Palindrome: Write a function that takes a string as input and checks if it is a palindrome. 
+A palindrome is a word or phrase that reads the same forwards and backwards. For example, if the input is "level", the output should be true.
 
-function isPalindrome(str) {
-  let left = 0;
-  let right = str.length - 1;
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false;
-    }
-    left++;
-    right--;
+
+  function isPalindrome(str) {
+  let reversed = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversed += str[i];
   }
-  return true;
+  return str === reversed;
 }
 
+const result= isPalindrome("level");
+console.log(result);
+  
+ 
+FizzBuzz: Write a program that prints the numbers from 1 to 100. But for multiples of three, print "Fizz" instead of the number, and 
+  for the multiples of five, print "Buzz". For numbers that are multiples of both three and five, print "FizzBuzz".
+    
 for (let i = 1; i <= 100; i++) {
   let output = '';
   if (i % 3 === 0) {
@@ -116,6 +196,8 @@ for (let i = 1; i <= 100; i++) {
   console.log(output || i);
 }
 
+Find the missing number: Given an array of numbers from 1 to N, where one number is missing, 
+  write a function to find the missing number. For example, if the input is [1, 2, 4, 5, 6], the output should be 3.
 
 function findMissingNumber(arr) {
   const n = arr.length + 1;
@@ -126,6 +208,10 @@ function findMissingNumber(arr) {
   }
   return totalSum - arrSum;
 }
+
+Remove duplicates from an array: Write a function that takes an array as input and returns a new array with duplicate elements removed. 
+  For example, if the input is [1, 2, 2, 3, 4, 4, 5], the output should be [1, 2, 3, 4, 5].
+
 
 function removeDuplicates(arr) {
   const result = [];
@@ -190,3 +276,182 @@ function countCharacterOccurrences(str, char) {
   }
   return count;
 }
+
+
+JavaScript function to find and log duplicate words in a sentence:
+
+function findDuplicateWords(sentence) {
+    // Convert the sentence to lowercase and split it into words
+    const words = sentence.toLowerCase().split(/\W+/);
+    const wordCount = {};
+    const duplicates = [];
+
+    // Count the occurrences of each word
+    words.forEach(word => {
+        if (word) {
+            if (wordCount[word]) {
+                wordCount[word]++;
+            } else {
+                wordCount[word] = 1;
+            }
+        }
+    });
+
+    // Identify the duplicate words
+    for (const word in wordCount) {
+        if (wordCount[word] > 1) {
+            duplicates.push(word);
+        }
+    }
+
+    // Log the duplicate words
+    console.log("Duplicate words:", duplicates);
+}
+
+// Example usage
+const sentence = "This is a test. This test is only a test.";
+findDuplicateWords(sentence);
+
+
+reverse the words in a sentence without using array methods, 
+
+
+
+function reverseWords(sentence) {
+    let result = '';
+    let word = '';
+    
+    for (let i = sentence.length - 1; i >= 0; i--) {
+        if (sentence[i] === ' ') {
+            if (word !== '') {
+                result = word + ' ' + result;
+                word = '';
+            }
+        } else {
+            word = sentence[i] + word;
+        }
+    }
+    
+    if (word !== '') {
+        result = word + ' ' + result;
+    }
+
+    // Remove the trailing space
+    return result.trim();
+}
+
+// Example usage
+const sentence = "This is a test sentence.";
+const reversedSentence = reverseWords(sentence);
+console.log(reversedSentence); // Output: "sentence. test a is This"
+
+
+reverse the words in a sentence without using array methods, and position of special characters must not change
+
+function reverseWordsPreserveSpecial(sentence) {
+    let result = '';
+    let word = '';
+    let specialChars = {};
+    
+    // Collect special characters and their positions
+    for (let i = 0; i < sentence.length; i++) {
+        if (!(/[a-zA-Z]/).test(sentence[i])) {
+            specialChars[i] = sentence[i];
+        }
+    }
+    
+    // Reverse the words in the sentence
+    for (let i = sentence.length - 1; i >= 0; i--) {
+        if ((/[a-zA-Z]/).test(sentence[i])) {
+            word = sentence[i] + word;
+        } else if (sentence[i] === ' ') {
+            if (word !== '') {
+                result += word + ' ';
+                word = '';
+            }
+        }
+    }
+    
+    // Add the last word
+    if (word !== '') {
+        result += word;
+    }
+
+    // Insert special characters back in their original positions
+    let finalResult = '';
+    let resultIndex = 0;
+    for (let i = 0; i < sentence.length; i++) {
+        if (specialChars.hasOwnProperty(i)) {
+            finalResult += specialChars[i];
+        } else {
+            finalResult += result[resultIndex] || '';
+            resultIndex++;
+        }
+    }
+
+    return finalResult;
+}
+
+// Example usage
+const sentence = "Th!s is, a t3st s*ntence.";
+const reversedSentence = reverseWordsPreserveSpecial(sentence);
+console.log(reversedSentence); // Output: "sntence! t3st, a is Th*s."
+
+To reverse the words in a sentence without reversing the sentence itself, and without changing the positions of special characters
+
+
+
+function reverseWords(sentence) {
+  const isLetter = (char) => char.match(/[a-zA-Z]/);
+  
+  // Step 1: Identify and store special character positions
+  let specialCharPositions = [];
+  for (let i = 0; i < sentence.length; i++) {
+    if (!isLetter(sentence[i])) {
+      specialCharPositions.push({char: sentence[i], index: i});
+    }
+  }
+
+  // Step 2: Extract words and reverse them
+  let words = "";
+  for (let i = 0; i < sentence.length; i++) {
+    if (isLetter(sentence[i])) {
+      words += sentence[i];
+    } else {
+      words += " ";
+    }
+  }
+
+  // Step 3: Split words and reverse them individually
+  let reversedWords = "";
+  let word = "";
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] !== " ") {
+      word = words[i] + word; // Prepend to reverse the word
+    } else {
+      reversedWords += word + " ";
+      word = "";
+    }
+  }
+  reversedWords += word; // Append the last word
+
+  // Step 4: Reconstruct the sentence with special characters in original positions
+  let result = "";
+  let j = 0;
+  for (let i = 0; i < sentence.length; i++) {
+    if (specialCharPositions.length > 0 && specialCharPositions[0].index === i) {
+      result += specialCharPositions.shift().char;
+    } else {
+      result += reversedWords[j];
+      j++;
+    }
+  }
+  
+  return result;
+}
+
+// Example usage:
+let sentence = "he!l?lo wo.rld";
+let reversedSentence = reverseWords(sentence);
+console.log(reversedSentence); // Output: "eh!l?ol dl.row"
+
