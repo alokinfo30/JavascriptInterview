@@ -460,6 +460,40 @@ let reversedSentence = reverseWords(sentence);
 console.log(reversedSentence); // Output: "eh!l?ol dl.row"
 
 
+ Write a Program to Find the consecutive letter count and display the output like => Input :"aaavvccfr", Output:"a3v2c2f1r1" 
+
+
+function countDuplicates(str) {
+    var counts = {};
+    var result = '';
+    
+    for (var i = 0; i < str.length; i++) {
+        var count = 1; // Initialize count for the current character
+        
+        for (var j = i + 1; j < str.length; j++) {
+            if (str[i] === str[j]) {
+                count++;
+            }
+        }
+        
+        if (counts[str[i]] === undefined) {
+            counts[str[i]] = count;
+        }
+    }
+
+    // Construct the result string
+    for (var char in counts) {
+        result += char + counts[char];
+    }
+
+    return result;
+}
+
+// Example usage:
+var input = "aabbccdde";
+var duplicateCounts = countDuplicates(input);
+console.log(duplicateCounts); // Output: "a2b2c2d2e1"
+
 
 // Using BUILT IN Methods
 
