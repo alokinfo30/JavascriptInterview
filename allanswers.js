@@ -1,6 +1,34 @@
 
 // Without using BUILT-IN Methods
 
+Write  a function that accepts an integer as parameter and prints this pattern. 
+In this case the input parameter is number 5
+
+5 4 3 2 1
+5 4 3 2
+5 4 3
+5 4 
+5 
+
+
+function printPattern(n) {
+  // Outer loop to handle the number of rows
+  for (let i = 0; i < n; i++) {
+    let row = '';
+    // Inner loop to handle the numbers in each row
+    for (let j = n; j > i; j--) {
+      row += j + ' ';
+    }
+    console.log(row.trim());
+  }
+}
+
+// Call the function with the input parameter 5
+printPattern(5);
+
+
+
+
 Reverse Words in a String: Write a function that takes a sentence as input and returns the sentence with the words reversed.
   For example, if the input is "Hello, World!", the output should be "World! Hello,".
   
@@ -602,3 +630,35 @@ function findDuplicates(arr) {
 
 const arr = [1, 2, 2, 3, 4, 4, 5];
 findDuplicates(arr);
+
+
+Write  a function that accepts an integer as parameter and prints this pattern. 
+In this case the input parameter is number 5
+
+5 4 3 2 1
+5 4 3 2
+5 4 3
+5 4 
+5 
+
+function printPattern(n, current = n) {
+  // Base case: when current is 0, stop the recursion
+  if (current === 0) {
+    return;
+  }
+
+  // Construct the row string
+  let row = '';
+  for (let i = n; i >= current; i--) {
+    row += i + ' ';
+  }
+
+  // Print the current row
+  console.log(row.trim());
+
+  // Recursive call to print the next row
+  printPattern(n, current - 1);
+}
+
+// Call the function with the input parameter 5
+printPattern(5);
