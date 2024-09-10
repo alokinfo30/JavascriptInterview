@@ -1,0 +1,18 @@
+A pyramid generator is a program where you can set the type of character, the count for the pyramid, and the direction of the pyramid. The program will then generate a pyramid based on those inputs.
+
+for (let i = 1; i <= 5; i++) {
+        let str = '';
+        
+        // Add leading spaces and stars in a single loop
+        for (let j = 1; j <= 6 + i - 1; j++) {
+            if (j <= 6 - i) {
+                str += ' ';
+            } else {
+                str += '#';
+            }
+        }
+        
+        console.log(str);
+    }
+
+
