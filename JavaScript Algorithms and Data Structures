@@ -15,4 +15,11 @@ for (let i = 1; i <= 5; i++) {
         console.log(str);
     }
 
+What will be output
 
+function padRow() {
+
+}
+const call = padRow();
+console.log(call);
+Output: undefined
