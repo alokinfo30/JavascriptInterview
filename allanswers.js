@@ -1,6 +1,31 @@
 
 // Without using BUILT-IN Methods
 
+const inputString = "Abcdedfavafdalafad";
+const outputString = processString(inputString);
+console.log(outputString); // Abcde, dfav, afd, al, af, ad
+
+
+
+
+const inputString = "Abcdefavafdalfad";
+
+function processString(str) {
+    let parts = [];  
+    let partLengths = [5, 4, 3, 2, 2, 2];
+    let startIndex = 0;
+  
+    for (let length of partLengths) {
+        let part = str.substring(startIndex, startIndex + length);
+        parts.push(part);
+       startIndex += length;
+    }   
+    return parts.join(", ");
+}
+const outputString = processString(inputString);
+console.log(outputString); // "Abcde, dfav, afd, al, af, ad"
+
+
 Write  a function that accepts an integer as parameter and prints this pattern. 
 In this case the input parameter is number 5
 
