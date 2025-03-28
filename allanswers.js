@@ -1,6 +1,41 @@
 
 // Without using BUILT-IN Methods
 
+const arr = [];
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (!arr.includes(char)) { // Check for duplicates
+      arr.push(char);
+    }
+  }
+
+  console.log("Length of unique array:", arr.length);
+
+// Example usage:
+const myString = "hello";
+const uniqueArray = stringToUniqueArray(myString);
+console.log(uniqueArray); // Output: ["h", "e", "l", "o"] and console logs 4
+
+const myString2 = "aabbccddeeff";
+const uniqueArray2 = stringToUniqueArray(myString2);
+console.log(uniqueArray2); // Output: ["a", "b", "c", "d", "e", "f"] and console logs 6
+
+const myString3 = "";
+const uniqueArray3 = stringToUniqueArray(myString3);
+console.log(uniqueArray3); // output: [] and console logs 0
+
+const notString = 123;
+const notStringArray = stringToUniqueArray(notString);
+console.log(notStringArray); // output: "Input is not a string"
+
+
+
+
+
+
+
+
+
 const inputString = "Abcdedfavafdalafad";
 const outputString = processString(inputString);
 console.log(outputString); // Abcde, dfav, afd, al, af, ad
