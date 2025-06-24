@@ -24,6 +24,7 @@ Keyword	          Hoisted?	            Initialized?	                            
 var	                Yes	                undefined	                              Function/Global	Can be used before declaration, returns undefined.
 let	                Yes	              Not initialized                           (TDZ)	Block	Causes ReferenceError if accessed before initialization.
 const	              Yes	              Not initialized                           (TDZ)	Block	Same as let, but must be initialized at declaration and cannot be reassigned.
+
 ### 2. What is hoisting in JavaScript?
 Hoisting is JavaScript's behavior of moving variable and function declarations to the top of their containing scope during compilation. Variables declared with `var` are hoisted and initialized to `undefined`, while `let` and `const` are hoisted but not initialized (causing a Temporal Dead Zone).
 
@@ -88,9 +89,20 @@ const obj = {
   sayName: function() { console.log(this.name); }, // Bob
   sayNameArrow: () => { console.log(this.name); } // undefined (this is global)
 };
-obj.sayName();
-obj.sayNameArrow();
-```
+obj.sayName(); // Calls sayName, logs: Bob
+obj.sayNameArrow(); // Calls sayNameArrow, logs: undefined
+
+
+const obj = {
+  name: "Bob",
+  sayName: function() { console.log(this.name); }, // Logs: Bob
+  sayNameArrow: function() {
+    const arrow = () => { console.log(this.name); };
+    arrow();
+  } // Logs: Bob
+};
+obj.sayName(); // Logs: Bob
+obj.sayNameArrow(); // Logs: Bob
 
 ### 6. What is the value of this in different contexts?
 `this` refers to the context in which a function is called:
