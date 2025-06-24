@@ -1,0 +1,729 @@
+# JavaScript Concepts: Basics, Async, Functional, Patterns, and Advanced Topics
+
+## Basics (1–10)
+
+### 1. What is the difference between var, let, and const?
+`var`, `let`, and `const` are used to declare variables in JavaScript, but they differ in scope, hoisting, and mutability:
+- **var**: Function-scoped, hoisted with `undefined`, can be redeclared and reassigned.
+- **let**: Block-scoped, hoisted but not initialized (Temporal Dead Zone), can be reassigned but not redeclared in the same scope.
+- **const**: Block-scoped, hoisted but not initialized, cannot be reassigned or redeclared, but objects/arrays declared with `const` can have their contents mutated.
+
+```javascript
+var x = 1; // Function-scoped, can be redeclared
+let y = 2; // Block-scoped, can be reassigned
+const z = 3; // Block-scoped, cannot be reassigned
+x = 10; // OK
+y = 20; // OK
+z = 30; // Error: Assignment to constant variable
+const obj = { a: 1 };
+obj.a = 2; // OK: Object properties can be mutated
+```
+Summary Table:
+
+Keyword	          Hoisted?	            Initialized?	                              Scope	Notes
+var	                Yes	                undefined	                              Function/Global	Can be used before declaration, returns undefined.
+let	                Yes	              Not initialized                           (TDZ)	Block	Causes ReferenceError if accessed before initialization.
+const	              Yes	              Not initialized                           (TDZ)	Block	Same as let, but must be initialized at declaration and cannot be reassigned.
+### 2. What is hoisting in JavaScript?
+Hoisting is JavaScript's behavior of moving variable and function declarations to the top of their containing scope during compilation. Variables declared with `var` are hoisted and initialized to `undefined`, while `let` and `const` are hoisted but not initialized (causing a Temporal Dead Zone).
+
+```javascript
+console.log(x); // undefined
+var x = 5;
+console.log(y); // ReferenceError: Cannot access 'y' before initialization
+let y = 10;
+
+function hoist() {
+  console.log(a); // undefined
+  var a = 20;
+}
+hoist();
+```
+
+### 3. Explain lexical scope with an example.
+Lexical scope means a variable's scope is determined by its location in the source code. Inner functions have access to variables in their outer function's scope, even after the outer function has executed.
+
+```javascript
+function outer() {
+  let name = "Alice";
+  function inner() {
+    console.log(name); // Alice
+  }
+  inner();
+}
+outer();
+```
+
+### 4. Difference between function declarations and function expressions?
+- **Function Declaration**: Defined with the `function` keyword, hoisted fully (name and body), can be called before definition.
+- **Function Expression**: A function assigned to a variable, only the variable is hoisted (not the function), can be named or anonymous.
+
+```javascript
+// Declaration
+hoisted(); // Works
+function hoisted() {
+  console.log("Hoisted!");
+}
+
+// Expression
+notHoisted(); // TypeError: notHoisted is not a function
+var notHoisted = function() {
+  console.log("Not hoisted!");
+};
+```
+
+### 5. What are arrow functions and how are they different?
+Arrow functions (`=>`) are a concise syntax for function expressions, introduced in ES6. They differ from regular functions:
+- No `this` binding; they inherit `this` from the enclosing scope.
+- No `arguments` object.
+- Cannot be used as constructors (no `new`).
+- Implicit return for single expressions.
+
+```javascript
+const add = (a, b) => a + b; // Implicit return
+console.log(add(2, 3)); // 5
+
+const obj = {
+  name: "Bob",
+  sayName: function() { console.log(this.name); }, // Bob
+  sayNameArrow: () => { console.log(this.name); } // undefined (this is global)
+};
+obj.sayName();
+obj.sayNameArrow();
+```
+
+### 6. What is the value of this in different contexts?
+`this` refers to the context in which a function is called:
+- **Global context**: `this` is `window` (browser) or `global` (Node.js).
+- **Object method**: `this` is the object the method is called on.
+- **Constructor**: `this` is the new instance.
+- **Event handlers**: `this` is the element that triggered the event.
+- **Arrow functions**: `this` is inherited from the enclosing lexical scope.
+
+```javascript
+console.log(this); // window/global
+const obj = {
+  name: "Alice",
+  greet() { console.log(this.name); }
+};
+obj.greet(); // Alice
+
+function Person() { this.name = "Bob"; }
+const p = new Person();
+console.log(p.name); // Bob
+```
+
+### 7. What are call, apply, and bind?
+These methods control the value of `this` in a function:
+- **call()**: Invokes a function with a specified `this` and individual arguments.
+- **apply()**: Invokes a function with a specified `this` and an array of arguments.
+- **bind()**: Returns a new function with a fixed `this` and optional preset arguments.
+
+```javascript
+function greet(greeting) {
+  console.log(`${greeting}, ${this.name}`);
+}
+const person = { name: "Alice" };
+greet.call(person, "Hello"); // Hello, Alice
+greet.apply(person, ["Hi"]); // Hi, Alice
+const boundGreet = greet.bind(person, "Hey");
+boundGreet(); // Hey, Alice
+```
+
+### 8. Difference between == and ===?
+- **==**: Loose equality, performs type coercion before comparison.
+- **===**: Strict equality, checks value and type without coercion.
+
+```javascript
+console.log(5 == "5"); // true (coerces string to number)
+console.log(5 === "5"); // false (different types)
+console.log(null == undefined); // true
+console.log(null === undefined); // false
+```
+
+### 9. What is event bubbling and event capturing?
+- **Event Bubbling**: Events propagate from the target element up to the root (default behavior).
+- **Event Capturing**: Events propagate from the root down to the target (enabled by setting `addEventListener`'s third argument to `true`).
+
+```javascript
+document.querySelector("#parent").addEventListener("click", () => console.log("Parent clicked"), true); // Capturing
+document.querySelector("#child").addEventListener("click", () => console.log("Child clicked")); // Bubbling
+// Clicking #child logs: "Parent clicked" (capturing), then "Child clicked" (bubbling)
+```
+
+### 10. What is the DOM and how is it manipulated?
+The Document Object Model (DOM) is a tree-like representation of a web page's structure, allowing JavaScript to interact with HTML/CSS. Manipulation involves accessing, modifying, or creating elements.
+
+```javascript
+// Accessing
+const div = document.querySelector("#myDiv");
+// Modifying
+div.textContent = "New content";
+div.style.color = "blue";
+// Creating
+const p = document.createElement("p");
+p.textContent = "New paragraph";
+document.body.appendChild(p);
+```
+
+## Async & Scope (11–20)
+
+### 11. Synchronous vs. asynchronous code
+- **Synchronous**: Code executes sequentially, blocking further execution until complete.
+- **Asynchronous**: Code executes without blocking, using callbacks, Promises, or async/await to handle results later.
+
+```javascript
+// Synchronous
+console.log("Start");
+function sync() { console.log("Sync"); }
+sync();
+console.log("End");
+
+// Asynchronous
+console.log("Start");
+setTimeout(() => console.log("Async"), 1000);
+console.log("End");
+```
+
+### 12. What is the Event Loop?
+The Event Loop is a mechanism that handles asynchronous operations by continuously checking the call stack and task queue. If the stack is empty, it moves tasks from the queue to the stack for execution.
+
+```javascript
+console.log("Start");
+setTimeout(() => console.log("Timeout"), 0);
+console.log("End");
+// Logs: Start, End, Timeout (setTimeout is queued)
+```
+
+### 13. Microtasks vs. macrotasks
+- **Macrotasks**: Tasks like `setTimeout`, `setInterval`, and I/O operations, executed in the task queue.
+- **Microtasks**: Higher-priority tasks like Promises and `queueMicrotask`, executed after the current stack but before the next macrotask.
+
+```javascript
+setTimeout(() => console.log("Macrotask"), 0);
+Promise.resolve().then(() => console.log("Microtask"));
+console.log("Sync");
+// Logs: Sync, Microtask, Macrotask
+```
+
+### 14. What is a callback function?
+A callback is a function passed as an argument to another function, executed after an event or task completes.
+
+```javascript
+function fetchData(callback) {
+  setTimeout(() => callback("Data"), 1000);
+}
+fetchData((data) => console.log(data)); // Logs: Data
+```
+
+### 15. What is callback hell and how to avoid it?
+Callback hell is nested callbacks that make code hard to read. Avoid it using Promises, async/await, or modularizing code.
+
+```javascript
+// Callback hell
+setTimeout(() => {
+  console.log("Step 1");
+  setTimeout(() => {
+    console.log("Step 2");
+  }, 1000);
+}, 1000);
+
+// Using async/await
+async function run() {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log("Step 1");
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log("Step 2");
+}
+run();
+```
+
+### 16. What is a Promise in JavaScript?
+A Promise is an object representing the eventual completion or failure of an asynchronous operation, with states: pending, fulfilled, or rejected.
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("Success"), 1000);
+});
+promise.then(result => console.log(result)); // Success
+promise.catch(error => console.log(error));
+```
+
+### 17. How does async/await work?
+`async` declares a function that returns a Promise. `await` pauses execution inside an `async` function until a Promise resolves.
+
+```javascript
+async function fetchData() {
+  try {
+    const data = await new Promise(resolve => setTimeout(() => resolve("Data"), 1000));
+    console.log(data); // Data
+  } catch (error) {
+    console.log(error);
+  }
+}
+fetchData();
+```
+
+### 18. Shallow copy vs. deep copy
+- **Shallow copy**: Copies top-level properties, but nested objects are referenced.
+- **Deep copy**: Copies all levels, creating independent copies of nested objects.
+
+```javascript
+// Shallow copy
+const obj = { a: 1, b: { c: 2 } };
+const shallow = { ...obj };
+shallow.b.c = 3;
+console.log(obj.b.c); // 3 (shared reference)
+
+// Deep copy
+const deep = JSON.parse(JSON.stringify(obj));
+deep.b.c = 4;
+console.log(obj.b.c); // 3 (independent)
+```
+
+### 19. Difference between null, undefined, and NaN
+- **null**: Explicitly represents "no value" or intentional absence.
+- **undefined**: Variable declared but not assigned or missing function return.
+- **NaN**: Result of invalid mathematical operations, not a number.
+
+```javascript
+let a;
+console.log(a); // undefined
+let b = null;
+console.log(b); // null
+console.log(0 / 0); // NaN
+console.log(typeof NaN); // number
+```
+
+### 20. What is a higher-order function?
+A higher-order function takes functions as arguments or returns a function.
+
+```javascript
+function higherOrder(fn) {
+  return fn();
+}
+function sayHello() {
+  return "Hello";
+}
+console.log(higherOrder(sayHello)); // Hello
+```
+
+## Functional & Modern JS (21–30)
+
+### 21. What is a pure function?
+A pure function always produces the same output for the same input, has no side effects, and doesn't rely on external state.
+
+```javascript
+// Pure
+function add(a, b) {
+  return a + b;
+}
+console.log(add(2, 3)); // Always 5
+
+// Impure
+let count = 0;
+function increment() {
+  return ++count; // Modifies external state
+}
+```
+
+### 22. What is immutability and how to achieve it?
+Immutability means data cannot be changed after creation. Achieve it using `const`, `Object.freeze()`, or libraries like Immutable.js.
+
+```javascript
+const arr = [1, 2, 3];
+arr.push(4); // OK, array is mutable
+const frozen = Object.freeze([1, 2, 3]);
+frozen.push(4); // Error: Cannot modify frozen object
+```
+
+### 23. What is the typeof operator?
+The `typeof` operator returns the type of a value as a string.
+
+```javascript
+console.log(typeof 42); // number
+console.log(typeof "hello"); // string
+console.log(typeof null); // object (historical bug)
+console.log(typeof undefined); // undefined
+console.log(typeof [1, 2]); // object
+```
+
+### 24. What are template literals?
+Template literals are string literals allowing embedded expressions, using backticks (\`) and `${}` for interpolation.
+
+```javascript
+const name = "Alice";
+console.log(`Hello, ${name}!`); // Hello, Alice!
+console.log(`Sum: ${1 + 2}`); // Sum: 3
+```
+
+### 25. What is destructuring in JavaScript?
+Destructuring extracts values from arrays or objects into variables.
+
+```javascript
+// Array destructuring
+const [a, b] = [1, 2];
+console.log(a, b); // 1, 2
+
+// Object destructuring
+const { name, age } = { name: "Alice", age: 25 };
+console.log(name, age); // Alice, 25
+```
+
+### 26. Spread syntax vs. rest parameters
+- **Spread syntax (`...`)**: Expands elements of an iterable/array or object properties.
+- **Rest parameters (`...`)**: Collects remaining arguments into an array.
+
+```javascript
+// Spread
+const arr1 = [1, 2];
+const arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]
+const obj1 = { a: 1 };
+const obj2 = { ...obj1, b: 2 }; // { a: 1, b: 2 }
+
+// Rest
+function sum(...numbers) {
+  return numbers.reduce((a, b) => a + b, 0);
+}
+console.log(sum(1, 2, 3)); // 6
+```
+
+### 27. for, for...in, and for...of — difference?
+- **for**: Traditional loop with index control.
+- **for...in**: Iterates over enumerable properties of an object.
+- **for...of**: Iterates over values of iterable objects (arrays, strings, etc.).
+
+```javascript
+const arr = [1, 2, 3];
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i]); // 1, 2, 3
+}
+for (let key in arr) {
+  console.log(key); // 0, 1, 2 (indices)
+}
+for (let value of arr) {
+  console.log(value); // 1, 2, 3
+}
+```
+
+### 28. What is a closure?
+A closure is a function that retains access to its lexical scope's variables even after the outer function has executed.
+
+```javascript
+function outer() {
+  let count = 0;
+  return function inner() {
+    return ++count;
+  };
+}
+const counter = outer();
+console.log(counter()); // 1
+console.log(counter()); // 2
+```
+
+### 29. What is currying in JavaScript?
+Currying transforms a function with multiple arguments into a sequence of single-argument functions.
+
+```javascript
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn(...args);
+    }
+    return (...nextArgs) => curried(...args, ...nextArgs);
+  };
+}
+const add = (a, b, c) => a + b + c;
+const curriedAdd = curry(add);
+console.log(curriedAdd(1)(2)(3)); // 6
+```
+
+### 30. What are default parameters?
+Default parameters allow functions to have predefined values if arguments are omitted or undefined.
+
+```javascript
+function greet(name = "Guest") {
+  return `Hello, ${name}`;
+}
+console.log(greet()); // Hello, Guest
+console.log(greet("Alice")); // Hello, Alice
+```
+
+## Common Patterns (31–40)
+
+### 31. Difference between map(), forEach(), and filter()
+- **map()**: Creates a new array by applying a function to each element.
+- **forEach()**: Executes a function for each element, no return value.
+- **filter()**: Creates a new array with elements that pass a test.
+
+```javascript
+const arr = [1, 2, 3];
+console.log(arr.map(x => x * 2)); // [2, 4, 6]
+arr.forEach(x => console.log(x)); // 1, 2, 3
+console.log(arr.filter(x => x > 1)); // [2, 3]
+```
+
+### 32. Falsy vs. truthy values
+- **Falsy**: Values that evaluate to `false` in a boolean context: `false`, `0`, `-0`, `""`, `null`, `undefined`, `NaN`.
+- **Truthy**: All other values.
+
+```javascript
+if (0) {
+  console.log("Truthy");
+} else {
+  console.log("Falsy"); // Logs: Falsy
+}
+if ("hello") {
+  console.log("Truthy"); // Logs: Truthy
+}
+```
+
+### 33. What is optional chaining (?.)
+Optional chaining allows safe access to nested properties without checking each level for `null` or `undefined`.
+
+```javascript
+const obj = { user: { name: "Alice" } };
+console.log(obj?.user?.name); // Alice
+console.log(obj?.user?.age?.value); // undefined (no error)
+```
+
+### 34. What is nullish coalescing (??)
+Nullish coalescing returns the right operand if the left is `null` or `undefined`, otherwise the left operand.
+
+```javascript
+const a = null ?? "default"; // default
+const b = 0 ?? 42; // 0 (not null/undefined)
+console.log(a, b);
+```
+
+### 35. What is a memory leak? How to avoid it?
+A memory leak occurs when memory is not released, causing performance issues. Avoid by:
+- Removing event listeners.
+- Clearing intervals/timeouts.
+- Avoiding global variables.
+- Using WeakMap/WeakSet for temporary references.
+
+```javascript
+// Potential leak
+let data = [];
+function add() {
+  data.push(new Array(1000000).fill(0)); // Keeps growing
+}
+// Fix: Clear or limit data
+function addLimited() {
+  if (data.length > 10) data = [];
+  data.push(new Array(1000000).fill(0));
+}
+```
+
+### 36. What are WeakMap and WeakSet?
+- **WeakMap**: A map where keys are objects, and entries are garbage-collected if the key is no longer referenced.
+- **WeakSet**: A set of objects, with entries garbage-collected if no other references exist.
+
+```javascript
+let obj = {};
+const wm = new WeakMap();
+wm.set(obj, "data");
+obj = null; // Entry is eligible for garbage collection
+```
+
+### 37. Stack vs. heap memory
+- **Stack**: Stores primitive values and function call frames, fast and fixed-size.
+- **Heap**: Stores objects and dynamic data, slower and managed by garbage collection.
+
+```javascript
+let a = 1; // Stack
+let obj = { b: 2 }; // Heap
+function foo() {
+  let c = 3; // Stack
+}
+foo(); // Call frame on stack
+```
+
+### 38. Difference between debounce and throttle
+- **Debounce**: Delays function execution until a specified time has passed since the last call.
+- **Throttle**: Limits function execution to once every specified interval.
+
+```javascript
+function debounce(fn, delay) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
+function throttle(fn, delay) {
+  let last = 0;
+  return function(...args) {
+    const now = Date.now();
+    if (now - last >= delay) {
+      fn(...args);
+      last = now;
+    }
+  };
+}
+```
+
+### 39. How setTimeout & setInterval really work
+- **setTimeout**: Schedules a function to run after a delay, added to the macrotask queue.
+- **setInterval**: Repeatedly schedules a function at fixed intervals, also using the macrotask queue.
+
+```javascript
+setTimeout(() => console.log("Delayed"), 1000); // Runs once after 1s
+setInterval(() => console.log("Every second"), 1000); // Runs every 1s
+```
+
+### 40. Purpose of Promise.all, Promise.any, Promise.race
+- **Promise.all**: Resolves when all promises resolve, or rejects with the first rejection.
+- **Promise.any**: Resolves with the first fulfilled promise, or rejects if all fail.
+- **Promise.race**: Resolves or rejects with the first promise that settles.
+
+```javascript
+const p1 = Promise.resolve("One");
+const p2 = new Promise(resolve => setTimeout(() => resolve("Two"), 1000));
+Promise.all([p1, p2]).then(values => console.log(values)); // ["One", "Two"]
+Promise.race([p1, p2]).then(value => console.log(value)); // One
+Promise.any([Promise.reject("Fail"), p1]).then(value => console.log(value)); // One
+```
+
+## Advanced Topics (41–50)
+
+### 41. Difference between Object.freeze() and Object.seal()
+- **Object.freeze()**: Prevents modification of existing properties and adding new ones; immutable.
+- **Object.seal()**: Prevents adding or deleting properties, but allows modifying existing ones.
+
+```javascript
+const obj = { a: 1 };
+Object.freeze(obj);
+obj.a = 2; // Ignored
+obj.b = 3; // Ignored
+console.log(obj); // { a: 1 }
+
+const sealed = { a: 1 };
+Object.seal(sealed);
+sealed.a = 2; // OK
+sealed.b = 3; // Ignored
+console.log(sealed); // { a: 2 }
+```
+
+### 42. Object.keys(), Object.values(), Object.entries()
+- **Object.keys()**: Returns an array of an object's enumerable property names.
+- **Object.values()**: Returns an array of an object's enumerable property values.
+- **Object.entries()**: Returns an array of [key, value] pairs.
+
+```javascript
+const obj = { a: 1, b: 2 };
+console.log(Object.keys(obj)); // ["a", "b"]
+console.log(Object.values(obj)); // [1, 2]
+console.log(Object.entries(obj)); // [["a", 1], ["b", 2]]
+```
+
+### 43. How do JS modules work? (import/export)
+Modules allow encapsulating code, with `export` to share and `import` to use. Supports default and named exports.
+
+```javascript
+// math.js
+export const add = (a, b) => a + b;
+export default (x) => x * x;
+
+// main.js
+import square, { add } from './math.js';
+console.log(add(2, 3)); // 5
+console.log(square(4)); // 16
+```
+
+### 44. What is an IIFE?
+An Immediately Invoked Function Expression (IIFE) is a function defined and executed immediately, often used to avoid polluting the global scope.
+
+```javascript
+(function() {
+  let secret = "Hidden";
+  console.log(secret); // Hidden
+})();
+console.log(typeof secret); // undefined
+```
+
+### 45. What is event delegation?
+Event delegation uses a single event listener on a parent to handle events from multiple children, leveraging event bubbling.
+
+```javascript
+document.querySelector("#list").addEventListener("click", (e) => {
+  if (e.target.tagName === "LI") {
+    console.log(e.target.textContent);
+  }
+});
+```
+
+### 46. Deep equality vs. strict equality
+- **Strict equality (`===`)**: Checks value and type.
+- **Deep equality**: Recursively compares object properties for equality.
+
+```javascript
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return false;
+  const keysA = Object.keys(a), keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (let key of keysA) {
+    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+console.log({ a: 1 } === { a: 1 }); // false
+console.log(deepEqual({ a: 1 }, { a: 1 })); // true
+```
+
+### 47. How does the JS engine work internally?
+The JS engine (e.g., V8) parses code, compiles it to machine code, and executes it. Key components:
+- **Parser**: Creates an Abstract Syntax Tree (AST).
+- **Interpreter**: Executes code quickly (e.g., Ignition in V8).
+- **Compiler**: Optimizes code for performance (e.g., TurboFan in V8).
+- **Garbage Collector**: Manages memory.
+
+```javascript
+// Simplified example
+function add(a, b) {
+  return a + b;
+}
+// Engine: Parses to AST, interprets, then optimizes to machine code
+```
+
+### 48. bind() vs. arrow function for this
+- **bind()**: Explicitly sets `this` for a function, creating a new function.
+- **Arrow function**: Inherits `this` from the lexical scope, no binding needed.
+
+```javascript
+const obj = {
+  name: "Alice",
+  say: function() { console.log(this.name); },
+  sayArrow: () => console.log(this.name)
+};
+const boundSay = obj.say.bind(obj);
+boundSay(); // Alice
+obj.sayArrow(); // undefined (this is global)
+```
+
+### 49. How to handle errors (try/catch/finally)
+`try/catch/finally` handles exceptions:
+- **try**: Code that might throw an error.
+- **catch**: Handles the error.
+- **finally**: Runs regardless of outcome.
+
+```javascript
+try {
+  throw new Error("Oops");
+} catch (error) {
+  console.log(error.message); // Oops
+} finally {
+  console.log("Cleanup"); // Cleanup
+}
+```
+
+### 50. How does garbage collection work in JS?
+JavaScript uses a mark-and-sweep garbage collector to reclaim memory from objects no longer referenced. WeakMap/WeakSet help by allowing garbage collection of keys/objects.
+
+```javascript
+let obj = { data: "Heavy" };
+obj = null; // Eligible for garbage collection
+```
+
