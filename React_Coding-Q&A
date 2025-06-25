@@ -357,3 +357,2170 @@
   </script>
 </body>
 </html>
+
+## Easy Project 4: Create a Modal Component in React
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal Component</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .fixed { position: fixed; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+    .bg-black { background-color: #000; }
+    .bg-opacity-50 { background-opacity: 0.5; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+    .mt-4 { margin-top: 1rem; }
+    .bg-red-500 { background-color: #ef4444; }
+    .hover\:bg-red-600:hover { background-color: #dc2626; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Modal = ({ isOpen, onClose, title, children }) => {
+      if (!isOpen) return null;
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4">{title}</h2>
+            <p className="text-gray-600">{children}</p>
+            <button
+              onClick={onClose}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    const App = () => {
+      const [isModalOpen, setIsModalOpen] = useState(false);
+
+      const openModal = () => setIsModalOpen(true);
+      const closeModal = () => setIsModalOpen(false);
+
+      return (
+        <div>
+          <button
+            onClick={openModal}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
+            Open Modal
+          </button>
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            title="Welcome!"
+          >
+            This is a simple modal component built with React.
+          </Modal>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Easy Project 5: Implement a Search Bar with Debouncing in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Bar with Debouncing</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .mt-4 { margin-top: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const useDebounce = (value, delay) => {
+      const [debouncedValue, setDebouncedValue] = useState(value);
+      useEffect(() => {
+        const handler = setTimeout(() => {
+          setDebouncedValue(value);
+        }, delay);
+        return () => clearTimeout(handler);
+      }, [value, delay]);
+      return debouncedValue;
+    };
+
+    const SearchBar = () => {
+      const [searchTerm, setSearchTerm] = useState('');
+      const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+      const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Search Bar</h1>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Search..."
+            className="w-full p-2 border rounded-md focus:outline-none"
+          />
+          <p className="mt-4 text-gray-600">
+            Debounced Search Term: {debouncedSearchTerm || 'None'}
+          </p>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<SearchBar />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Easy Project 6: Design a Basic React Router Setup
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic React Router</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6.22.3/dist/umd/react-router-dom.production.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-4 { padding: 1rem; }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+    .flex { display: flex; }
+    .space-x-4 > :not(:first-child) { margin-left: 1rem; }
+    .text-blue-500 { color: #3b82f6; }
+    .hover\:text-blue-700:hover { color: #1d4ed8; }
+    .p-6 { padding: 1.5rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { BrowserRouter, Routes, Route, Link } = ReactRouterDOM;
+
+    const Home = () => <h1 className="text-2xl font-bold text-center">Home Page</h1>;
+    const About = () => <h1 className="text-2xl font-bold text-center">About Page</h1>;
+    const Contact = () => <h1 className="text-2xl font-bold text-center">Contact Page</h1>;
+
+    const App = () => {
+      return (
+        <BrowserRouter>
+          <nav className="bg-white p-4 shadow-md">
+            <div className="flex space-x-4">
+              <Link to="/" className="text-blue-500 hover:text-blue-700">Home</Link>
+              <Link to="/about" className="text-blue-500 hover:text-blue-700">About</Link>
+              <Link to="/contact" className="text-blue-500 hover:text-blue-700">Contact</Link>
+            </div>
+          </nav>
+          <div className="p-6">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Easy Project 7: Build a Simple Pagination Component in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagination Component</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .mt-4 { margin-top: 1rem; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .bg-gray-300 { background-color: #d1d5db; }
+    .cursor-not-allowed { cursor: not-allowed; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
+      const pageNumbers = [];
+      for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
+        pageNumbers.push(i);
+      }
+
+      return (
+        <div className="flex space-x-2">
+          {pageNumbers.map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            >
+              {number}
+            </button>
+          ))}
+        </div>
+      );
+    };
+
+    const App = () => {
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 3;
+      const items = Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`);
+
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+
+      const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Pagination</h1>
+          <ul className="space-y-2">
+            {currentItems.map((item, index) => (
+              <li key={index} className="p-2 border rounded-md">{item}</li>
+            ))}
+          </ul>
+          <div className="mt-4 flex justify-center">
+            <Pagination
+              itemsPerPage={itemsPerPage}
+              totalItems={items.length}
+              paginate={paginate}
+            />
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Easy Project 8: Design a Login Form with Validation using React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form with Validation</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .block { display: block; }
+    .text-sm { font-size: 0.875rem; }
+    .font-medium { font-weight: 500; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .border-red-500 { border-color: #ef4444; }
+    .text-red-500 { color: #ef4444; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const LoginForm = () => {
+      const [formData, setFormData] = useState({ email: '', password: '' });
+      const [errors, setErrors] = useState({ email: '', password: '' });
+
+      const validate = () => {
+        const newErrors = { email: '', password: '' };
+        if (!formData.email.includes('@')) {
+          newErrors.email = 'Invalid email address';
+        }
+        if (formData.password.length < 6) {
+          newErrors.password = 'Password must be at least 6 characters';
+        }
+        return newErrors;
+      };
+
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+      };
+
+      const handleSubmit = () => {
+        const validationErrors = validate();
+        setErrors(validationErrors);
+        if (!validationErrors.email && !validationErrors.password) {
+          console.log('Login Data:', formData);
+          alert('Login successful!');
+          setFormData({ email: '', password: '' });
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Login Form</h1>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                className={`w-full p-2 border rounded-md focus:outline-none ${errors.email ? 'border-red-500' : ''}`}
+              />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+                className={`w-full p-2 border rounded-md focus:outline-none ${errors.password ? 'border-red-500' : ''}`}
+              />
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            </div>
+            <button
+              onClick={handleSubmit}
+              className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<LoginForm />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Easy Project 9: Build a Simple Dropdown Menu in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Menu</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .relative { position: relative; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .absolute { position: absolute; }
+    .top-full { top: 100%; }
+    .left-0 { left: 0; }
+    .bg-white { background-color: #fff; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .rounded-md { border-radius: 0.375rem; }
+    .w-48 { width: 12rem; }
+    .block { display: block; }
+    .p-2 { padding: 0.5rem; }
+    .text-gray-700 { color: #374151; }
+    .hover\:bg-gray-100:hover { background-color: #f3f4f6; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Dropdown = () => {
+      const [isOpen, setIsOpen] = useState(false);
+      const options = ['Option 1', 'Option 2', 'Option 3'];
+
+      const toggleDropdown = () => setIsOpen(!isOpen);
+      const selectOption = (option) => {
+        console.log('Selected:', option);
+        setIsOpen(false);
+      };
+
+      return (
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
+            Select Option
+          </button>
+          {isOpen && (
+            <div className="absolute top-full left-0 bg-white shadow-lg rounded-md w-48">
+              {options.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => selectOption(option)}
+                  className="block w-full text-left p-2 text-gray-700 hover:bg-gray-100"
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<Dropdown />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Easy Project 10: Create a Light/Dark Theme Toggle in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Light/Dark Theme Toggle</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .bg-gray-800 { background-color: #1f2937; }
+    .text-gray-800 { color: #1f2937; }
+    .text-white { color: #fff; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .bg-gray-900 { background-color: #111827; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const ThemeToggle = () => {
+      const [isDark, setIsDark] = useState(false);
+
+      const toggleTheme = () => {
+        setIsDark(!isDark);
+      };
+
+      return (
+        <div className={`flex items-center justify-center min-h-screen ${isDark ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}`}>
+          <div className={`bg-${isDark ? 'gray-900' : 'white'} p-6 rounded-lg shadow-lg w-full max-w-md`}>
+            <h1 className="text-2xl font-bold mb-4 text-center">Theme Toggle</h1>
+            <p className="text-center mb-4">
+              Current theme: {isDark ? 'Dark' : 'Light'}
+            </p>
+            <button
+              onClick={toggleTheme}
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+              Toggle Theme
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ThemeToggle />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+
+## Medium Project 11: Build a Weather App using React and an API
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .mt-4 { margin-top: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const WeatherApp = () => {
+      const [city, setCity] = useState('');
+      const [weather, setWeather] = useState(null);
+
+      // Mock API response for demo (replace with real API call in production)
+      const fetchWeather = async (city) => {
+        return {
+          name: city,
+          main: { temp: 25, humidity: 60 },
+          weather: [{ description: 'Sunny' }],
+        };
+      };
+
+      const handleSearch = () => {
+        if (city.trim()) {
+          fetchWeather(city).then((data) => setWeather(data));
+          setCity('');
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Weather App</h1>
+          <div className="flex mb-4">
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Enter city"
+              className="flex-grow p-2 border rounded-l-md focus:outline-none"
+            />
+            <button
+              onClick={handleSearch}
+              className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600"
+            >
+              Search
+            </button>
+          </div>
+          {weather && (
+            <div className="text-center">
+              <p className="text-lg font-semibold">{weather.name}</p>
+              <p>Temperature: {weather.main.temp}°C</p>
+              <p>Humidity: {weather.main.humidity}%</p>
+              <p>Condition: {weather.weather[0].description}</p>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<WeatherApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 12: Create a Chat Application in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Application</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .flex-col { flex-direction: column; }
+    .h-64 { height: 16rem; }
+    .overflow-y-auto { overflow-y: auto; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .bg-gray-200 { background-color: #e5e7eb; }
+    .ml-auto { margin-left: auto; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const ChatApp = () => {
+      const [messages, setMessages] = useState([]);
+      const [input, setInput] = useState('');
+
+      const sendMessage = () => {
+        if (input.trim()) {
+          setMessages([...messages, { id: Date.now(), text: input, sender: 'You' }]);
+          setInput('');
+          // Simulate bot reply
+          setTimeout(() => {
+            setMessages((prev) => [...prev, { id: Date.now(), text: 'Hi! I am a bot.', sender: 'Bot' }]);
+          }, 1000);
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md flex flex-col">
+          <h1 className="text-2xl font-bold mb-4 text-center">Chat App</h1>
+          <div className="flex-grow h-64 overflow-y-auto space-y-2">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`p-2 rounded-md ${msg.sender === 'You' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200'}`}
+              >
+                <strong>{msg.sender}:</strong> {msg.text}
+              </div>
+            ))}
+          </div>
+          <div className="flex mt-4">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type a message"
+              className="flex-grow p-2 border rounded-l-md focus:outline-none"
+            />
+            <button
+              onClick={sendMessage}
+              className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ChatApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 13: Build a CRUD Application with React and Firebase
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Application</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .flex-grow { flex-grow: 1; }
+    .bg-red-500 { background-color: #ef4444; }
+    .hover\:bg-red-600:hover { background-color: #dc2626; }
+    .bg-yellow-500 { background-color: #f59e0b; }
+    .hover\:bg-yellow-600:hover { background-color: #d97706; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const CrudApp = () => {
+      const [items, setItems] = useState([]);
+      const [input, setInput] = useState('');
+      const [editId, setEditId] = useState(null);
+
+      // Mock Firebase CRUD operations
+      const addItem = () => {
+        if (input.trim()) {
+          setItems([...items, { id: Date.now(), text: input }]);
+          setInput('');
+        }
+      };
+
+      const updateItem = () => {
+        if (input.trim() && editId) {
+          setItems(items.map((item) => (item.id === editId ? { ...item, text: input } : item)));
+          setInput('');
+          setEditId(null);
+        }
+      };
+
+      const deleteItem = (id) => {
+        setItems(items.filter((item) => item.id !== id));
+      };
+
+      const startEdit = (item) => {
+        setInput(item.text);
+        setEditId(item.id);
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">CRUD App</h1>
+          <div className="flex mb-4">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Enter item"
+              className="flex-grow p-2 border rounded-l-md focus:outline-none"
+            />
+            <button
+              onClick={editId ? updateItem : addItem}
+              className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600"
+            >
+              {editId ? 'Update' : 'Add'}
+            </button>
+          </div>
+          <ul className="space-y-2">
+            {items.map((item) => (
+              <li key={item.id} className="flex items-center p-2 border rounded-md">
+                <span className="flex-grow">{item.text}</span>
+                <button
+                  onClick={() => startEdit(item)}
+                  className="bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 mr-2"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteItem(item.id)}
+                  className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<CrudApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 14: Design a Multi-step Form using React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-step Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .block { display: block; }
+    .text-sm { font-size: 0.875rem; }
+    .font-medium { font-weight: 500; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .bg-gray-500 { background-color: #6b7280; }
+    .hover\:bg-gray-600:hover { background-color: #4b5563; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const MultiStepForm = () => {
+      const [step, setStep] = useState(1);
+      const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+      };
+
+      const nextStep = () => setStep(step + 1);
+      const prevStep = () => setStep(step - 1);
+      const submitForm = () => {
+        console.log('Form Data:', formData);
+        alert('Form submitted!');
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Multi-step Form (Step {step}/3)</h1>
+          {step === 1 && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter your name"
+                  className="w-full p-2 border rounded-md focus:outline-none"
+                />
+              </div>
+              <button
+                onClick={nextStep}
+                className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Next
+              </button>
+            </div>
+          )}
+          {step === 2 && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter your email"
+                  className="w-full p-2 border rounded-md focus:outline-none"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={prevStep}
+                  className="w-full bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={nextStep}
+                  className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Phone</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="Enter your phone"
+                  className="w-full p-2 border rounded-md focus:outline-none"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={prevStep}
+                  className="w-full bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={submitForm}
+                  className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<MultiStepForm />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 15: Create a Responsive Sidebar Navigation in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Sidebar Navigation</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .flex { display: flex; }
+    .bg-gray-800 { background-color: #1f2937; }
+    .text-white { color: #fff; }
+    .w-64 { width: 16rem; }
+    .p-4 { padding: 1rem; }
+    .fixed { position: fixed; }
+    .top-0 { top: 0; }
+    .left-0 { left: 0; }
+    .h-screen { height: 100vh; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .block { display: block; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-gray-700:hover { background-color: #374151; }
+    .ml-64 { margin-left: 16rem; }
+    .p-6 { padding: 1.5rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .md\:hidden { display: block; }
+    @media (min-width: 768px) { .md\:hidden { display: none; } }
+    .md\:block { display: none; }
+    @media (min-width: 768px) { .md\:block { display: block; } }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Sidebar = () => {
+      const [isOpen, setIsOpen] = useState(false);
+      const navItems = ['Home', 'About', 'Services', 'Contact'];
+
+      return (
+        <div>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden bg-blue-500 text-white px-4 py-2 rounded-md fixed top-4 left-4"
+          >
+            Menu
+          </button>
+          <div className={`fixed top-0 left-0 h-screen bg-gray-800 text-white w-64 p-4 ${isOpen ? 'block' : 'hidden'} md:block`}>
+            <h2 className="text-2xl font-bold mb-4">Sidebar</h2>
+            <nav className="space-y-4">
+              {navItems.map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="block py-2 px-4 rounded-md hover:bg-gray-700"
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+          </div>
+          <div className="ml-64 p-6">
+            <h1 className="text-2xl font-bold">Main Content</h1>
+            <p>Click the menu button on mobile to toggle the sidebar.</p>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<Sidebar />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 16: Build a Dynamic Data Table with Sorting & Pagination
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Data Table</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-4xl { max-width: 56rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .p-4 { padding: 1rem; }
+    .bg-gray-200 { background-color: #e5e7eb; }
+    .cursor-pointer { cursor: pointer; }
+    .hover\:bg-blue-100:hover { background-color: #dbeafe; }
+    .mt-4 { margin-top: 1rem; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const DataTable = () => {
+      const [data, setData] = useState([
+        { id: 1, name: 'Alice', age: 25 },
+        { id: 2, name: 'Bob', age: 30 },
+        { id: 3, name: 'Charlie', age: 35 },
+        { id: 4, name: 'David', age: 28 },
+        { id: 5, name: 'Eve', age: 22 },
+      ]);
+      const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 3;
+
+      const sortData = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+          direction = 'desc';
+        }
+        const sorted = [...data].sort((a, b) => {
+          if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+          if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+          return 0;
+        });
+        setData(sorted);
+        setSortConfig({ key, direction });
+      };
+
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+          <h1 className="text-2xl font-bold mb-4 text-center">Data Table</h1>
+          <table className="w-full border">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="p-4 cursor-pointer" onClick={() => sortData('id')}>
+                  ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                </th>
+                <th className="p-4 cursor-pointer" onClick={() => sortData('name')}>
+                  Name {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                </th>
+                <th className="p-4 cursor-pointer" onClick={() => sortData('age')}>
+                  Age {sortConfig.key === 'age' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.map((item) => (
+                <tr key={item.id} className="border hover:bg-blue-100">
+                  <td className="p-4">{item.id}</td>
+                  <td className="p-4">{item.name}</td>
+                  <td className="p-4">{item.age}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-4 flex justify-center space-x-2">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => setCurrentPage(i + 1)}
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<DataTable />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 17: Build a Custom Hook for Form Validation
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Hook for Form Validation</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .block { display: block; }
+    .text-sm { font-size: 0.875rem; }
+    .font-medium { font-weight: 500; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .border-red-500 { border-color: #ef4444; }
+    .text-red-500 { color: #ef4444; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const useFormValidation = (initialValues, validate) => {
+      const [values, setValues] = useState(initialValues);
+      const [errors, setErrors] = useState({});
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setValues({ ...values, [name]: value });
+        setErrors({ ...errors, [name]: validate[name](value) });
+      };
+
+      const handleSubmit = (callback) => {
+        const newErrors = {};
+        Object.keys(values).forEach((key) => {
+          newErrors[key] = validate[key](values[key]);
+        });
+        setErrors(newErrors);
+        if (Object.values(newErrors).every((error) => !error)) {
+          callback(values);
+        }
+      };
+
+      return { values, errors, handleChange, handleSubmit };
+    };
+
+    const FormWithValidation = () => {
+      const validate = {
+        email: (value) => (value.includes('@') ? '' : 'Invalid email'),
+        password: (value) => (value.length >= 6 ? '' : 'Password must be 6+ characters'),
+      };
+
+      const { values, errors, handleChange, handleSubmit } = useFormValidation(
+        { email: '', password: '' },
+        validate
+      );
+
+      const onSubmit = (data) => {
+        console.log('Form Data:', data);
+        alert('Form submitted!');
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Form Validation</h1>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className={`w-full p-2 border rounded-md focus:outline-none ${errors.email ? 'border-red-500' : ''}`}
+              />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className={`w-full p-2 border rounded-md focus:outline-none ${errors.password ? 'border-red-500' : ''}`}
+              />
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            </div>
+            <button
+              onClick={() => handleSubmit(onSubmit)}
+              className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<FormWithValidation />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 18: Design a Responsive Layout using React and CSS Grid
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Layout</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .lg\:grid-cols-3 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .gap-4 { gap: 1rem; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const Layout = () => {
+      const items = Array.from({ length: 6 }, (_, i) => `Item ${i + 1}`);
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Responsive Grid Layout</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {items.map((item, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h2 className="text-lg font-semibold">{item}</h2>
+                <p className="text-gray-600">Responsive card content.</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<Layout />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 19: Build an Image Carousel Component in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Carousel</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .relative { position: relative; }
+    .h-64 { height: 16rem; }
+    .object-cover { object-fit: cover; }
+    .absolute { position: absolute; }
+    .top-1\/2 { top: 50%; }
+    .transform { transform: translateY(-50%); }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .p-2 { padding: 0.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Carousel = () => {
+      const images = [
+        'https://via.placeholder.com/600x400?text=Image+1',
+        'https://via.placeholder.com/600x400?text=Image+2',
+        'https://via.placeholder.com/600x400?text=Image+3',
+      ];
+      const [currentIndex, setCurrentIndex] = useState(0);
+
+      const prevSlide = () => {
+        setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+      };
+
+      const nextSlide = () => {
+        setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+          <h1 className="text-2xl font-bold mb-4 text-center">Image Carousel</h1>
+          <div className="relative">
+            <img
+              src={images[currentIndex]}
+              alt="Carousel"
+              className="w-full h-64 object-cover rounded-md"
+            />
+            <button
+              onClick={prevSlide}
+              className="absolute top-1/2 left-0 transform bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              ←
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute top-1/2 right-0 transform bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              →
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<Carousel />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 20: Create a Drag-and-Drop Interface in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag and Drop Interface</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .p-4 { padding: 1rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .bg-blue-100 { background-color: #dbeafe; }
+    .cursor-move { cursor: move; }
+    .bg-yellow-100 { background-color: #fefcbf; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const DragDrop = () => {
+      const [items, setItems] = useState(['Item 1', 'Item 2', 'Item 3']);
+      const [draggedItem, setDraggedItem] = useState(null);
+
+      const handleDragStart = (e, index) => {
+        setDraggedItem(index);
+        e.dataTransfer.setData('text/plain', index);
+      };
+
+      const handleDragOver = (e) => {
+        e.preventDefault();
+      };
+
+      const handleDrop = (e, index) => {
+        e.preventDefault();
+        const draggedIndex = Number(e.dataTransfer.getData('text/plain'));
+        const newItems = [...items];
+        const [dragged] = newItems.splice(draggedIndex, 1);
+        newItems.splice(index, 0, dragged);
+        setItems(newItems);
+        setDraggedItem(null);
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Drag and Drop</h1>
+          <div className="space-y-2">
+            {items.map((item, index) => (
+              <div
+                key={index}
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, index)}
+                className={`p-4 border rounded-md ${draggedItem === index ? 'bg-yellow-100' : 'bg-blue-100'} cursor-move`}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<DragDrop />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 21: Implement a Search Filter for a List of Items
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Filter</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const SearchFilter = () => {
+      const items = ['Apple', 'Banana', 'Orange', 'Mango', 'Pineapple'];
+      const [searchTerm, setSearchTerm] = useState('');
+
+      const filteredItems = items.filter((item) =>
+        item.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Search Filter</h1>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search items..."
+            className="w-full p-2 border rounded-md focus:outline-none"
+          />
+          <ul className="space-y-2 mt-4">
+            {filteredItems.map((item, index) => (
+              <li key={index} className="p-2 border rounded-md text-gray-600">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<SearchFilter />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 22: Build a Movie Search App using React and an API
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Search App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .mt-4 { margin-top: 1rem; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gap-4 { gap: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const MovieSearchApp = () => {
+      const [searchTerm, setSearchTerm] = useState('');
+      const [movies, setMovies] = useState([]);
+
+      // Mock API response
+      const fetchMovies = async (query) => {
+        return [
+          { id: 1, title: `${query} Movie 1`, year: 2020 },
+          { id: 2, title: `${query} Movie 2`, year: 2021 },
+        ];
+      };
+
+      const handleSearch = () => {
+        if (searchTerm.trim()) {
+          fetchMovies(searchTerm).then((data) => setMovies(data));
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+          <h1 className="text-2xl font-bold mb-4 text-center">Movie Search</h1>
+          <div className="flex mb-4">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search movies..."
+              className="flex-grow p-2 border rounded-l-md focus:outline-none"
+            />
+            <button
+              onClick={handleSearch}
+              className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600"
+            >
+              Search
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {movies.map((movie) => (
+              <div key={movie.id} className="p-4 border rounded-md">
+                <h3 className="font-semibold">{movie.title}</h3>
+                <p className="text-gray-600">Year: {movie.year}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<MovieSearchApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 23: Implement Infinite Scrolling in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinite Scroll</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-4 { padding: 1rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const InfiniteScroll = () => {
+      const [items, setItems] = useState([]);
+      const [page, setPage] = useState(1);
+      const [loading, setLoading] = useState(false);
+      const loaderRef = useRef(null);
+
+      const fetchItems = async (page) => {
+        // Mock API call
+        return Array.from({ length: 10 }, (_, i) => `Item ${(page - 1) * 10 + i + 1}`);
+      };
+
+      const loadMore = async () => {
+        setLoading(true);
+        const newItems = await fetchItems(page);
+        setItems((prev) => [...prev, ...newItems]);
+        setLoading(false);
+      };
+
+      useEffect(() => {
+        loadMore();
+      }, [page]);
+
+      useEffect(() => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting && !loading) {
+              setPage((prev) => prev + 1);
+            }
+          },
+          { threshold: 1.0 }
+        );
+        if (loaderRef.current) observer.observe(loaderRef.current);
+        return () => observer.disconnect();
+      }, [loading]);
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Infinite Scroll</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto">
+            <div className="space-y-2">
+              {items.map((item, index) => (
+                <div key={index} className="p-4 border rounded-md text-gray-600">
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div ref={loaderRef} className="text-center mt-4">
+              {loading && <p>Loading...</p>}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<InfiniteScroll />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 24: Build a Component with Context API for State Management
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context API State Management</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .p-2 { padding: 0.5rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { createContext, useContext, useState } = React;
+
+    const ThemeContext = createContext();
+
+    const ThemeProvider = ({ children }) => {
+      const [theme, setTheme] = useState('light');
+
+      const toggleTheme = () => {
+        setTheme(theme === 'light' ? 'dark' : 'light');
+      };
+
+      return (
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+          {children}
+        </ThemeContext.Provider>
+      );
+    };
+
+    const ThemeToggle = () => {
+      const { theme, toggleTheme } = useContext(ThemeContext);
+      return (
+        <button
+          onClick={toggleTheme}
+          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+        >
+          Toggle to {theme === 'light' ? 'Dark' : 'Light'} Theme
+        </button>
+      );
+    };
+
+    const Display = () => {
+      const { theme } = useContext(ThemeContext);
+      return (
+        <p className="text-gray-600">Current Theme: {theme}</p>
+      );
+    };
+
+    const App = () => {
+      return (
+        <ThemeProvider>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h1 className="text-2xl font-bold mb-4 text-center">Context API</h1>
+            <Display />
+            <ThemeToggle />
+          </div>
+        </ThemeProvider>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 25: Create a File Upload Component in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload Component</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .mt-4 { margin-top: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const FileUpload = () => {
+      const [file
