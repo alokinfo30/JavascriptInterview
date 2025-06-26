@@ -2474,13 +2474,10 @@
   </script>
 </body>
 </html>
-```
-
----
 
 ## Medium Project 25: Create a File Upload Component in React
 
-```html
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2523,4 +2520,2268 @@
     const { useState } = React;
 
     const FileUpload = () => {
-      const [file
+      const [file, setFile] = useState(null);
+      const [fileName, setFileName] = useState('');
+
+      const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setFile(selectedFile);
+          setFileName(selectedFile.name);
+          // Mock upload
+          console.log('Uploading:', selectedFile.name);
+        }
+      };
+
+      const handleUpload = () => {
+        if (file) {
+          alert(`File ${fileName} uploaded successfully!`);
+          setFile(null);
+          setFileName('');
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">File Upload</h1>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="w-full p-2 border rounded-md focus:outline-none"
+          />
+          {fileName && <p className="mt-4 text-gray-600">Selected: {fileName}</p>}
+          <button
+            onClick={handleUpload}
+            disabled={!file}
+            className={`mt-4 w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 ${!file ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            Upload
+          </button>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<FileUpload />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 26: Build a Real-time Voting App in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Voting App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const VotingApp = () => {
+      const [votes, setVotes] = useState({ option1: 0, option2: 0, option3: 0 });
+
+      // Mock real-time update
+      const handleVote = (option) => {
+        setVotes((prev) => ({ ...prev, [option]: prev[option] + 1 }));
+        // Simulate server update
+        console.log(`Voted for ${option}`);
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Voting App</h1>
+          <div className="space-y-2">
+            {Object.keys(votes).map((option) => (
+              <div key={option} className="flex items-center justify-between p-2 border rounded-md">
+                <span className="text-gray-600">
+                  Option {option.slice(-1)}: {votes[option]} votes
+                </span>
+                <button
+                  onClick={() => handleVote(option)}
+                  className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                >
+                  Vote
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<VotingApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 27: Create a Comment System with Nested Replies in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comment System</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .ml-6 { margin-left: 1.5rem; }
+    .text-gray-600 { color: #4b5563; }
+    .text-sm { font-size: 0.875rem; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Comment = ({ comment, onReply }) => {
+      const [replyText, setReplyText] = useState('');
+      const [showReply, setShowReply] = useState(false);
+
+      const handleReply = () => {
+        if (replyText.trim()) {
+          onReply(comment.id, replyText);
+          setReplyText('');
+          setShowReply(false);
+        }
+      };
+
+      return (
+        <div className="p-2 border rounded-md">
+          <p className="text-gray-600">{comment.text}</p>
+          <button
+            onClick={() => setShowReply(!showReply)}
+            className="text-blue-500 text-sm"
+          >
+            {showReply ? 'Cancel' : 'Reply'}
+          </button>
+          {showReply && (
+            <div className="mt-2">
+              <input
+                type="text"
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                placeholder="Write a reply..."
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <button
+                onClick={handleReply}
+                className="mt-2 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Submit
+              </button>
+            </div>
+          )}
+          {comment.replies && comment.replies.length > 0 && (
+            <div className="ml-6 mt-2 space-y-2">
+              {comment.replies.map((reply) => (
+                <Comment key={reply.id} comment={reply} onReply={onReply} />
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const CommentSystem = () => {
+      const [comments, setComments] = useState([]);
+      const [commentText, setCommentText] = useState('');
+
+      const addComment = () => {
+        if (commentText.trim()) {
+          setComments([...comments, { id: Date.now(), text: commentText, replies: [] }]);
+          setCommentText('');
+        }
+      };
+
+      const addReply = (commentId, replyText) => {
+        const updateComments = (comments) =>
+          comments.map((comment) => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                replies: [...comment.replies, { id: Date.now(), text: replyText, replies: [] }],
+              };
+            }
+            return { ...comment, replies: updateComments(comment.replies) };
+          });
+        setComments(updateComments(comments));
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+          <h1 className="text-2xl font-bold mb-4 text-center">Comment System</h1>
+          <div className="mb-4">
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Write a comment..."
+              className="w-full p-2 border rounded-md focus:outline-none"
+            />
+            <button
+              onClick={addComment}
+              className="mt-2 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            >
+              Submit
+            </button>
+          </div>
+          <div className="space-y-4">
+            {comments.map((comment) => (
+              <Comment key={comment.id} comment={comment} onReply={addReply} />
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<CommentSystem />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 28: Build a Quiz Application with Score Tracking in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .bg-green-500 { background-color: #10b981; }
+    .bg-red-500 { background-color: #ef4444; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const QuizApp = () => {
+      const questions = [
+        {
+          id: 1,
+          question: 'What is 2 + 2?',
+          options: ['3', '4', '5', '6'],
+          answer: '4',
+        },
+        {
+          id: 2,
+          question: 'What is the capital of France?',
+          options: ['Paris', 'London', 'Berlin', 'Madrid'],
+          answer: 'Paris',
+        },
+      ];
+      const [currentQuestion, setCurrentQuestion] = useState(0);
+      const [score, setScore] = useState(0);
+      const [showResult, setShowResult] = useState(false);
+
+      const handleAnswer = (option) => {
+        if (option === questions[currentQuestion].answer) {
+          setScore(score + 1);
+        }
+        if (currentQuestion < questions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+        } else {
+          setShowResult(true);
+        }
+      };
+
+      const resetQuiz = () => {
+        setCurrentQuestion(0);
+        setScore(0);
+        setShowResult(false);
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Quiz App</h1>
+          {!showResult ? (
+            <div>
+              <p className="text-lg mb-4">
+                Question {currentQuestion + 1}/{questions.length}: {questions[currentQuestion].question}
+              </p>
+              <div className="space-y-2">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswer(option)}
+                    className="w-full p-2 border rounded-md hover:bg-blue-600 hover:text-white"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-lg mb-4">Your Score: {score}/{questions.length}</p>
+              <button
+                onClick={resetQuiz}
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Restart Quiz
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<QuizApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 29: Implement Authentication with Firebase in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const AuthApp = () => {
+      const [user, setUser] = useState(null);
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+
+      // Mock Firebase authentication
+      const login = () => {
+        if (email && password) {
+          setUser({ email });
+          console.log('Logged in:', email);
+          setEmail('');
+          setPassword('');
+        }
+      };
+
+      const logout = () => {
+        setUser(null);
+        console.log('Logged out');
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Authentication</h1>
+          {user ? (
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">Welcome, {user.email}!</p>
+              <button
+                onClick={logout}
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <button
+                onClick={login}
+                className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Login
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<AuthApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Medium Project 30: Build a Blog Platform with Markdown Support in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Platform</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@5.0.2/lib/marked.umd.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+    .prose { max-width: 65ch; }
+  </style>
+</head>
+<body className="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const BlogPlatform = () => {
+      const [posts, setPosts] = useState([]);
+      const [title, setTitle] = useState('');
+      const [content, setContent] = useState('');
+
+      const addPost = () => {
+        if (title.trim() && content.trim()) {
+          setPosts([...posts, { id: Date.now(), title, content: marked.parse(content) }]);
+          setTitle('');
+          setContent('');
+        }
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Blog Platform</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto mb-6">
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Post Title"
+              className="w-full p-2 border rounded-md focus:outline-none mb-4"
+            />
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Write in Markdown..."
+              className="w-full p-2 border rounded-md focus:outline-none h-32"
+            ></textarea>
+            <button
+              onClick={addPost}
+              className="mt-4 w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            >
+              Publish
+            </button>
+          </div>
+          <div className="space-y-4 w-full max-w-2xl mx-auto">
+            {posts.map((post) => (
+              <div key={post.id} className="bg-white p-6 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+                <div className="prose text-gray-600" dangerouslySetInnerHTML={{ __html: post.content }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<BlogPlatform />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 31: Build a Real-time Collaborative Text Editor in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Text Editor</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .h-64 { height: 16rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const CollaborativeEditor = () => {
+      const [text, setText] = useState('');
+
+      // Mock real-time collaboration with local storage
+      useEffect(() => {
+        const savedText = localStorage.getItem('collabText') || '';
+        setText(savedText);
+
+        const handleStorageChange = (e) => {
+          if (e.key === 'collabText') {
+            setText(e.newValue || '');
+          }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+      }, []);
+
+      const handleChange = (e) => {
+        const newText = e.target.value;
+        setText(newText);
+        localStorage.setItem('collabText', newText);
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+          <h1 className="text-2xl font-bold mb-4 text-center">Collaborative Editor</h1>
+          <textarea
+            value={text}
+            onChange={handleChange}
+            placeholder="Start typing..."
+            className="w-full p-2 border rounded-md focus:outline-none h-64"
+          ></textarea>
+          <p className="text-gray-600 text-sm mt-2">
+            Open in another tab to simulate real-time collaboration.
+          </p>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<CollaborativeEditor />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 32: Create a Kanban Board Application in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Board</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .flex { display: flex; }
+    .space-x-4 > :not(:first-child) { margin-left: 1rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-64 { width: 16rem; }
+    .p-4 { padding: 1rem; }
+    .text-xl { font-size: 1.25rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .cursor-move { cursor: move; }
+    .bg-blue-100 { background-color: #dbeafe; }
+    .text-gray-600 { color: #4b5563; }
+    .text-2xl { font-size: 1.5rem; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const KanbanBoard = () => {
+      const [columns, setColumns] = useState({
+        todo: [
+          { id: 1, text: 'Task 1' },
+          { id: 2, text: 'Task 2' },
+        ],
+        inProgress: [{ id: 3, text: 'Task 3' }],
+        done: [],
+      });
+
+      const handleDragStart = (e, taskId, sourceCol) => {
+        e.dataTransfer.setData('taskId', taskId);
+        e.dataTransfer.setData('sourceCol', sourceCol);
+      };
+
+      const handleDragOver = (e) => {
+        e.preventDefault();
+      };
+
+      const handleDrop = (e, targetCol) => {
+        const taskId = Number(e.dataTransfer.getData('taskId'));
+        const sourceCol = e.dataTransfer.getData('sourceCol');
+
+        if (sourceCol !== targetCol) {
+          const task = columns[sourceCol].find((t) => t.id === taskId);
+          setColumns((prev) => ({
+            ...prev,
+            [sourceCol]: prev[sourceCol].filter((t) => t.id !== taskId),
+            [targetCol]: [...prev[targetCol], task],
+          }));
+        }
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Kanban Board</h1>
+          <div className="flex space-x-4">
+            {Object.keys(columns).map((col) => (
+              <div
+                key={col}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, col)}
+                className="bg-white p-4 rounded-lg shadow-lg w-64"
+              >
+                <h2 className="text-xl font-bold mb-4 capitalize">{col.replace(/([A-Z])/g, ' $1')}</h2>
+                <div className="space-y-2">
+                  {columns[col].map((task) => (
+                    <div
+                      key={task.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, task.id, col)}
+                      className="p-2 border rounded-md bg-blue-100 cursor-move text-gray-600"
+                    >
+                      {task.text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<KanbanBoard />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 33: Implement a Video Streaming App in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Streaming App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-4xl { max-width: 56rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gap-4 { gap: 1rem; }
+    .p-4 { padding: 1rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .cursor-pointer { cursor: pointer; }
+    .hover\:bg-blue-100:hover { background-color: #dbeafe; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const VideoStreamingApp = () => {
+      const videos = [
+        { id: 1, title: 'Video 1', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+        { id: 2, title: 'Video 2', url: 'https://www.w3schools.com/html/movie.mp4' },
+      ];
+      const [currentVideo, setCurrentVideo] = useState(videos[0]);
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Video Streaming</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
+            <video
+              src={currentVideo.url}
+              controls
+              className="w-full rounded-md mb-4"
+            ></video>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {videos.map((video) => (
+                <div
+                  key={video.id}
+                  onClick={() => setCurrentVideo(video)}
+                  className="p-4 border rounded-md cursor-pointer hover:bg-blue-100"
+                >
+                  <h3 className="font-semibold">{video.title}</h3>
+                  <p className="text-gray-600">Click to play</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<VideoStreamingApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 34: Build a Task Management App with Recurring Tasks
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Management App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .flex { display: flex; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+    .text-gray-600 { color: #4b5563; }
+    .bg-red-500 { background-color: #ef4444; }
+    .hover\:bg-red-600:hover { background-color: #dc2626; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const TaskManagementApp = () => {
+      const [tasks, setTasks] = useState([]);
+      const [taskText, setTaskText] = useState('');
+      const [isRecurring, setIsRecurring] = useState(false);
+
+      const addTask = () => {
+        if (taskText.trim()) {
+          setTasks([...tasks, { id: Date.now(), text: taskText, completed: false, recurring: isRecurring }]);
+          setTaskText('');
+          setIsRecurring(false);
+        }
+      };
+
+      const toggleTask = (id) => {
+        setTasks(
+          tasks.map((task) =>
+            task.id === id
+              ? { ...task, completed: !task.completed }
+              : task
+          )
+        );
+      };
+
+      const deleteTask = (id) => {
+        setTasks(tasks.filter((task) => task.id !== id));
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Task Management</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto">
+            <div className="flex mb-4">
+              <input
+                type="text"
+                value={taskText}
+                onChange={(e) => setTaskText(e.target.value)}
+                placeholder="Add a task"
+                className="flex-grow p-2 border rounded-l-md focus:outline-none"
+              />
+              <button
+                onClick={addTask}
+                className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600"
+              >
+                Add
+              </button>
+            </div>
+            <label className="flex items-center mb-4">
+              <input
+                type="checkbox"
+                checked={isRecurring}
+                onChange={() => setIsRecurring(!isRecurring)}
+                className="mr-2"
+              />
+              <span className="text-gray-600">Recurring Task</span>
+            </label>
+            <div className="space-y-2">
+              {tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="flex items-center p-2 border rounded-md"
+                >
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask(task.id)}
+                    className="mr-2"
+                  />
+                  <span
+                    className={`flex-grow text-gray-600 ${task.completed ? 'line-through' : ''}`}
+                  >
+                    {task.text} {task.recurring && '(Recurring)'}
+                  </span>
+                  <button
+                    onClick={() => deleteTask(task.id)}
+                    className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<TaskManagementApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 35: Create a Chat App with Video Call Feature in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat with Video Call</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .flex-col { flex-direction: column; }
+    .h-64 { height: 16rem; }
+    .overflow-y-auto { overflow-y: auto; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .bg-gray-200 { background-color: #e5e7eb; }
+    .ml-auto { margin-left: auto; }
+    .bg-green-500 { background-color: #10b981; }
+    .hover\:bg-green-600:hover { background-color: #059669; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const ChatVideoApp = () => {
+      const [messages, setMessages] = useState([]);
+      const [input, setInput] = useState('');
+      const [isVideoCall, setIsVideoCall] = useState(false);
+
+      const sendMessage = () => {
+        if (input.trim()) {
+          setMessages([...messages, { id: Date.now(), text: input, sender: 'You' }]);
+          setInput('');
+          setTimeout(() => {
+            setMessages((prev) => [...prev, { id: Date.now(), text: 'Hi! I am a bot.', sender: 'Bot' }]);
+          }, 1000);
+        }
+      };
+
+      const startVideoCall = () => {
+        setIsVideoCall(true);
+        console.log('Starting mock video call');
+      };
+
+      const endVideoCall = () => {
+        setIsVideoCall(false);
+        console.log('Ending mock video call');
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl flex flex-col">
+          <h1 className="text-2xl font-bold mb-4 text-center">Chat with Video Call</h1>
+          {isVideoCall ? (
+            <div className="mb-4">
+              <div className="bg-gray-200 h-64 rounded-md flex items-center justify-center">
+                <p className="text-gray-600">Mock Video Call Interface</p>
+              </div>
+              <button
+                onClick={endVideoCall}
+                className="mt-4 w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+              >
+                End Call
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="flex-grow h-64 overflow-y-auto space-y-2 mb-4">
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`p-2 rounded-md ${msg.sender === 'You' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200'}`}
+                  >
+                    <strong>{msg.sender}:</strong> {msg.text}
+                  </div>
+                ))}
+              </div>
+              <div className="flex mb-4">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type a message"
+                  className="flex-grow p-2 border rounded-l-md focus:outline-none"
+                />
+                <button
+                  onClick={sendMessage}
+                  className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600"
+                >
+                  Send
+                </button>
+              </div>
+              <button
+                onClick={startVideoCall}
+                className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+              >
+                Start Video Call
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ChatVideoApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 36: Build an E-commerce Store with Cart Functionality
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Store</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gap-4 { gap: 1rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .p-4 { padding: 1rem; }
+    .text-xl { font-size: 1.25rem; }
+    .font-bold { font-weight: 700; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .text-gray-600 { color: #4b5563; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .p-2 { padding: 0.5rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .text-2xl { font-size: 1.5rem; }
+    .text-center { text-align: center; }
+    .mb-4 { margin-bottom: 1rem; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .bg-red-500 { background-color: #ef4444; }
+    .hover\:bg-red-600:hover { background-color: #dc2626; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const ECommerceStore = () => {
+      const products = [
+        { id: 1, name: 'Product A', price: 20 },
+        { id: 2, name: 'Product B', price: 30 },
+        { id: 3, name: 'Product C', price: 40 },
+      ];
+      const [cart, setCart] = useState([]);
+
+      const addToCart = (product) => {
+        const existing = cart.find((item) => item.id === product.id);
+        if (existing) {
+          setCart(
+            cart.map((item) =>
+              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            )
+          );
+        } else {
+          setCart([...cart, { ...product, quantity: 1 }]);
+        }
+      };
+
+      const removeFromCart = (id) => {
+        setCart(cart.filter((item) => item.id !== id));
+      };
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">E-commerce Store</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {products.map((product) => (
+              <div key={product.id} className="bg-white p-4 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold mb-2">{product.name}</h2>
+                <p className="text-gray-600 mb-2">${product.price}</p>
+                <button
+                  onClick={() => addToCart(product)}
+                  className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto">
+            <h2 className="text-xl font-bold mb-4">Cart</h2>
+            <div className="space-y-2">
+              {cart.map((item) => (
+                <div key={item.id} className="flex items-center p-2 border rounded-md">
+                  <span className="flex-grow text-gray-600">
+                    {item.name} x {item.quantity} - ${item.price * item.quantity}
+                  </span>
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+            <p className="text-xl font-bold mt-4">Total: ${total}</p>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ECommerceStore />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 37: Implement a File Sharing App in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Sharing App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375remprocesses all the code within one page; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .mt-4 { margin-top: 1rem; }
+    .text-gray-600 { color: #4b5563; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const FileSharingApp = () => {
+      const [files, setFiles] = useState([]);
+      const [file, setFile] = useState(null);
+
+      const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setFile(selectedFile);
+        }
+      };
+
+      const handleUpload = () => {
+        if (file) {
+          const fileUrl = URL.createObjectURL(file);
+          setFiles([...files, { id: Date.now(), name: file.name, url: fileUrl }]);
+          setFile(null);
+          console.log('File uploaded:', file.name);
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">File Sharing</h1>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="w-full p-2 border rounded-md focus:outline-none"
+          />
+          <button
+            onClick={handleUpload}
+            disabled={!file}
+            className={`mt-4 w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 ${!file ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            Upload
+          </button>
+          <div className="mt-4 space-y-2">
+            {files.map((file) => (
+              <div key={file.id} className="p-2 border rounded-md">
+                <a href={file.url} download className="text-blue-500 hover:text-blue-600">
+                  {file.name}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<FileSharingApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+</html>
+```
+
+---
+
+## Hard Project 38: Create a Dashboard with Interactive Charts in React
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 768px) { .md:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gap-4 { gap: 1rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .p-4 { padding: 1rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .w-full { width: 100%; }
+    .max-w-4xl { max-width: 56rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useEffect, useRef } = React;
+
+    const ChartComponent = ({ type, data, title }) => {
+      const canvasRef = useRef(null);
+      const chartRef = useRef(null);
+
+      useEffect(() => {
+        if (canvasRef.current) {
+          if (chartRef.current) chartRef.current.destroy();
+          chartRef.current = new Chart(canvasRef.current, {
+            type: type,
+            data: data,
+            options: { responsive: true, plugins: { title: { display: true, text: title } } },
+          });
+        }
+        return () => {
+          if (chartRef.current) chartRef.current.destroy();
+        };
+      }, [data, type, title]);
+
+      return <canvas ref={canvasRef} />;
+    };
+
+    const Dashboard = () => {
+      const barData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [{ label: 'Sales', data: [65, 59, 80, 81], backgroundColor: '#3b82f6' }],
+      };
+      const lineData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [{ label: 'Revenue', data: [28, 48, 40, 19], borderColor: '#10b981', fill: false }],
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Dashboard</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl mx-auto">
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <ChartComponent type="bar" data={barData} title="Monthly Sales" />
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <ChartComponent type="line" data={lineData} title="Monthly Revenue" />
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<Dashboard />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+
+## Hard Project 39: Build a Social Media Analytics Tool in React
+
+This project simulates a social media analytics dashboard displaying mock data for followers, engagement, and post performance using Chart.js for visualizations.
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gap-4 { gap: 1rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .p-4 { padding: 1rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .w-full { width: 100%; }
+    .max-w-4xl { max-width: 56rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useEffect, useRef } = React;
+
+    const ChartComponent = ({ type, data, title }) => {
+      const canvasRef = useRef(null);
+      const chartRef = useRef(null);
+
+      useEffect(() => {
+        if (canvasRef.current) {
+          if (chartRef.current) chartRef.current.destroy();
+          chartRef.current = new Chart(canvasRef.current, {
+            type: type,
+            data: data,
+            options: { responsive: true, plugins: { title: { display: true, text: title } } },
+          });
+        }
+        return () => {
+          if (chartRef.current) chartRef.current.destroy();
+        };
+      }, [data, type, title]);
+
+      return <canvas ref={canvasRef} />;
+    };
+
+    const SocialMediaAnalytics = () => {
+      const followerData = {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{ label: 'Followers', data: [500, 600, 750, 900], backgroundColor: '#3b82f6' }],
+      };
+      const engagementData = {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{ label: 'Engagement', data: [20, 35, 50, 45], borderColor: '#10b981', fill: false }],
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Social Media Analytics</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl mx-auto">
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <ChartComponent type="bar" data={followerData} title="Follower Growth" />
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <ChartComponent type="line" data={engagementData} title="Engagement Rate" />
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<SocialMediaAnalytics />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 40: Create a Job Board with Filtering and Sorting in React
+
+This project builds a job board with mock job listings, allowing users to filter by job type and sort by date or salary.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Board</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-3xl { max-width: 48rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .flex { display: flex; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const JobBoard = () => {
+      const jobs = [
+        { id: 1, title: 'Frontend Developer', type: 'Full-time', salary: 80000, date: '2025-06-01' },
+        { id: 2, title: 'Backend Developer', type: 'Part-time', salary: 60000, date: '2025-06-10' },
+        { id: 3, title: 'Designer', type: 'Full-time', salary: 70000, date: '2025-06-05' },
+      ];
+      const [filterType, setFilterType] = useState('All');
+      const [sortBy, setSortBy] = useState('date');
+
+      const filteredJobs = filterType === 'All'
+        ? jobs
+        : jobs.filter((job) => job.type === filterType);
+
+      const sortedJobs = [...filteredJobs].sort((a, b) => {
+        if (sortBy === 'salary') return b.salary - a.salary;
+        return new Date(b.date) - new Date(a.date);
+      });
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Job Board</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+            <div className="flex mb-4 space-x-2">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="p-2 border rounded-md focus:outline-none"
+              >
+                <option>All</option>
+                <option>Full-time</option>
+                <option>Part-time</option>
+              </select>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="p-2 border rounded-md focus:outline-none"
+              >
+                <option value="date">Sort by Date</option>
+                <option value="salary">Sort by Salary</option>
+              </select>
+            </div>
+            <div className="space-y-4">
+              {sortedJobs.map((job) => (
+                <div key={job.id} className="p-4 border rounded-md">
+                  <h2 className="text-xl font-bold">{job.title}</h2>
+                  <p className="text-gray-600">{job.type} - ${job.salary} - {job.date}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<JobBoard />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 41: Build a Real-time Stock Market App in React
+
+This project simulates a stock market dashboard with mock stock data, updating prices every few seconds to mimic real-time updates.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Market App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-3xl { max-width: 48rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-2 > :not(:last-child) { margin-bottom: 0.5rem; }
+    .p-4 { padding: 1rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .text-gray-600 { color: #4b5563; }
+    .text-green-600 { color: #059669; }
+    .text-red-600 { color: #dc2626; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const StockMarketApp = () => {
+      const initialStocks = [
+        { id: 1, symbol: 'AAPL', price: 150, change: 0 },
+        { id: 2, symbol: 'GOOG', price: 2800, change: 0 },
+        { id: 3, symbol: 'MSFT', price: 300, change: 0 },
+      ];
+      const [stocks, setStocks] = useState(initialStocks);
+
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setStocks((prev) =>
+            prev.map((stock) => {
+              const change = (Math.random() - 0.5) * 10;
+              return { ...stock, price: stock.price + change, change };
+            })
+          );
+        }, 3000);
+        return () => clearInterval(interval);
+      }, []);
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Stock Market</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+            <div className="space-y-2">
+              {stocks.map((stock) => (
+                <div key={stock.id} className="p-4 border rounded-md flex justify-between">
+                  <span className="text-gray-600">{stock.symbol}</span>
+                  <span className="text-gray-600">${stock.price.toFixed(2)}</span>
+                  <span className={stock.change >= 0 ? 'text-green-600' : 'text-red-600'}>
+                    {stock.change.toFixed(2)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<StockMarketApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 42: Create a Learning Management System in React
+
+This project builds a basic LMS with mock courses, allowing users to enroll and track progress.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Management System</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-3xl { max-width: 48rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-4 { padding: 1rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const LMS = () => {
+      const courses = [
+        { id: 1, title: 'React Basics', progress: 0 },
+        { id: 2, title: 'JavaScript Advanced', progress: 0 },
+      ];
+      const [enrolled, setEnrolled] = useState([]);
+
+      const enrollCourse = (course) => {
+        if (!enrolled.find((c) => c.id === course.id)) {
+          setEnrolled([...enrolled, { ...course, progress: 0 }]);
+        }
+      };
+
+      const updateProgress = (id) => {
+        setEnrolled(
+          enrolled.map((course) =>
+            course.id === id
+              ? { ...course, progress: Math.min(course.progress + 10, 100) }
+              : course
+          )
+        );
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Learning Management System</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+            <h2 className="text-xl font-bold mb-4">Available Courses</h2>
+            <div className="space-y-4 mb-6">
+              {courses.map((course) => (
+                <div key={course.id} className="p-4 border rounded-md flex justify-between">
+                  <span className="text-gray-600">{course.title}</span>
+                  <button
+                    onClick={() => enrollCourse(course)}
+                    className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                    disabled={enrolled.find((c) => c.id === course.id)}
+                  >
+                    Enroll
+                  </button>
+                </div>
+              ))}
+            </div>
+            <h2 className="text-xl font-bold mb-4">Enrolled Courses</h2>
+            <div className="space-y-4">
+              {enrolled.map((course) => (
+                <div key={course.id} className="p-4 border rounded-md flex justify-between">
+                  <span className="text-gray-600">
+                    {course.title} - {course.progress}% Complete
+                  </span>
+                  <button
+                    onClick={() => updateProgress(course.id)}
+                    className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                    disabled={course.progress === 100}
+                  >
+                    Progress
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<LMS />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 43: Build a Fitness Tracking App in React
+
+This project creates a fitness tracker where users can log workouts and view progress with mock data.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .flex { display: flex; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const FitnessTracker = () => {
+      const [workouts, setWorkouts] = useState([]);
+      const [type, setType] = useState('');
+      const [duration, setDuration] = useState('');
+
+      const logWorkout = () => {
+        if (type.trim() && duration) {
+          setWorkouts([...workouts, { id: Date.now(), type, duration: Number(duration) }]);
+          setType('');
+          setDuration('');
+        }
+      };
+
+      const totalDuration = workouts.reduce((sum, workout) => sum + workout.duration, 0);
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Fitness Tracker</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto">
+            <div className="flex mb-4 space-x-2">
+              <input
+                type="text"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                placeholder="Workout Type"
+                className="flex-grow p-2 border rounded-md focus:outline-none"
+              />
+              <input
+                type="number"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="Duration (min)"
+                className="w-32 p-2 border rounded-md focus:outline-none"
+              />
+              <button
+                onClick={logWorkout}
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Log
+              </button>
+            </div>
+            <p className="text-gray-600 mb-4">Total Duration: {totalDuration} minutes</p>
+            <div className="space-y-2">
+              {workouts.map((workout) => (
+                <div key={workout.id} className="p-2 border rounded-md">
+                  <span className="text-gray-600">{workout.type}: {workout.duration} minutes</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<FitnessTracker />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 44: Create a Payment Gateway Integration in React
+
+This project simulates a payment gateway integration with a mock checkout process, displaying a confirmation on payment.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Gateway</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: #fff; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const PaymentGateway = () => {
+      const [cardNumber, setCardNumber] = useState('');
+      const [expiry, setExpiry] = useState('');
+      const [cvv, setCvv] = useState('');
+      const [isPaid, setIsPaid] = useState(false);
+
+      const handlePayment = () => {
+        if (cardNumber && expiry && cvv) {
+          setIsPaid(true);
+          console.log('Mock payment processed');
+          setCardNumber('');
+          setExpiry('');
+          setCvv('');
+        }
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Payment Gateway</h1>
+          {isPaid ? (
+            <div className="text-center text-gray-600">
+              Payment Successful!
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <input
+                type="text"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                placeholder="Card Number"
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <input
+                type="text"
+                value={expiry}
+                onChange={(e) => setExpiry(e.target.value)}
+                placeholder="MM/YY"
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <input
+                type="text"
+                value={cvv}
+                onChange={(e) => setCvv(e.target.value)}
+                placeholder="CVV"
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <button
+                onClick={handlePayment}
+                className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Pay Now
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<PaymentGateway />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Hard Project 45: Build a Machine Learning Model Visualizer in React
+
+This project creates a visualizer for a mock machine learning model’s predictions, using Chart.js to display results.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Model Visualizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .bg-gray-100 { background-color: #f3f4f6; }
+    .min-h-screen { min-height: 100vh; }
+    .p-6 { padding: 1.5rem; }
+    .bg-white { background-color: #fff; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .w-full { width: 100%; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-2xl { font-size: 1.5rem; }
+    .font-bold { font-weight: 700; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .space-y-4 > :not(:last-child) { margin-bottom: 1rem; }
+    .p-2 { padding: 0.5rem; }
+    .border { border-width: 1px; border-color: #d1d5db; }
+    .rounded-md { border-radius: 0.375rem; }
+    .focus\:outline-none:focus { outline: none; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .text-white { color: #fff; }
+    .hover\:bg-blue-600:hover { background-color: #2563eb; }
+    .flex { display: flex; }
+    .space-x-2 > :not(:first-child) { margin-left: 0.5rem; }
+    .text-gray-600 { color: #4b5563; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const ChartComponent = ({ data, title }) => {
+      const canvasRef = useRef(null);
+      const chartRef = useRef(null);
+
+      useEffect(() => {
+        if (canvasRef.current) {
+          if (chartRef.current) chartRef.current.destroy();
+          chartRef.current = new Chart(canvasRef.current, {
+            type: 'scatter',
+            data: data,
+            options: {
+              responsive: true,
+              plugins: { title: { display: true, text: title } },
+              scales: { x: { title: { display: true, text: 'Input' } }, y: { title: { display: true, text: 'Prediction' } } },
+            },
+          });
+        }
+        return () => {
+          if (chartRef.current) chartRef.current.destroy();
+        };
+      }, [data, title]);
+
+      return <canvas ref={canvasRef} />;
+    };
+
+    const MLVisualizer = () => {
+      const [input, setInput] = useState('');
+      const [predictions, setPredictions] = useState([]);
+
+      const predict = () => {
+        if (input) {
+          const x = Number(input);
+          // Mock ML model: y = 2x + noise
+          const y = 2 * x + (Math.random() - 0.5) * 2;
+          setPredictions([...predictions, { x, y }]);
+          setInput('');
+        }
+      };
+
+      const chartData = {
+        datasets: [
+          {
+            label: 'Predictions',
+            data: predictions,
+            backgroundColor: '#3b82f6',
+          },
+        ],
+      };
+
+      return (
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">ML Model Visualizer</h1>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto">
+            <div className="flex mb-4 space-x-2">
+              <input
+                type="number"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Enter input value"
+                className="w-full p-2 border rounded-md focus:outline-none"
+              />
+              <button
+                onClick={predict}
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+              >
+                Predict
+              </button>
+            </div>
+            {predictions.length > 0 && (
+              <ChartComponent data={chartData} title="Model Predictions" />
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<MLVisualizer />, document.getElementById('root'));
+  </script>
+</body>
+</html>
