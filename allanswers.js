@@ -1,5 +1,48 @@
 
 // Without using BUILT-IN Methods
+To complete your code so that it **finds and logs the duplicates along with their counts** from a string (`str`), you need to:
+
+1. Track the **frequency of each character**.
+2. Identify **duplicates** (those with count > 1).
+3. Log them with their **counts**.
+
+Here’s the **corrected and completed code**:
+
+const str = "programming"; // Example input
+const arr = []; // To store unique characters
+const freq = {}; // To store frequency of characters
+
+for (let i = 0; i < str.length; i++) {
+  const char = str[i];
+  
+  // Count frequency
+  freq[char] = (freq[char] || 0) + 1;
+
+  // Store unique characters
+  if (!arr.includes(char)) {
+    arr.push(char);
+  }
+}
+
+console.log("Length of unique array:", arr.length);
+
+// Find and log duplicates with counts
+console.log("Duplicates and their counts:");
+for (const char in freq) {
+  if (freq[char] > 1) {
+    console.log(`${char}: ${freq[char]}`);
+  }
+}
+```
+
+### 🔍 Example Output for `str = "programming"`:
+
+```
+Length of unique array: 8
+Duplicates and their counts:
+r: 2
+g: 2
+m: 2
 
 const arr = [];
   for (let i = 0; i < str.length; i++) {
