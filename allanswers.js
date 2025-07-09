@@ -84,7 +84,33 @@ const outputString = processString(inputString);
 console.log(outputString); // Abcde, dfav, afd, al, af, ad
 
 
+function processString(str) {
+  const result = [];
+  let current = "";
 
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    if (current.includes(char)) {
+      result.push(current);
+      current = char; // start new group
+    } else {
+      current += char;
+    }
+  }
+
+  if (current) {
+    result.push(current);
+  }
+
+  return result.join(", ");
+}
+
+const inputString = "Abcdedfavafdalafad";
+const outputString = processString(inputString);
+console.log(outputString); // Abcde, dfav, afd, al, af, ad
+Or
+========≠===≠==================≠==≠==========≠{=============
 
 const inputString = "Abcdefavafdalfad";
 
