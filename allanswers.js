@@ -1,5 +1,26 @@
 
 // Without using BUILT-IN Methods
+
+
+const arr = [5, 2, 9, 1, 5, 6];
+
+// Descending Bubble Sort without using array methods
+for (let i = 0; i < arr.length; i++) {
+  for (let j = 0; j < arr.length - 1 - i; j++) {
+    if (arr[j] < arr[j + 1]) {
+      // Swap elements
+      let temp = arr[j];
+      arr[j] = arr[j + 1];
+      arr[j + 1] = temp;
+    }
+  }
+}
+
+console.log("Descending Order:", arr);
+
+
+
+
 To complete your code so that it **finds and logs the duplicates along with their counts** from a string (`str`), you need to:
 
 1. Track the **frequency of each character**.
