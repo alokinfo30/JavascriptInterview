@@ -734,8 +734,196 @@ try {
 ### 50. How does garbage collection work in JS?
 JavaScript uses a mark-and-sweep garbage collector to reclaim memory from objects no longer referenced. WeakMap/WeakSet help by allowing garbage collection of keys/objects.
 
-```javascript
+
 let obj = { data: "Heavy" };
 obj = null; // Eligible for garbage collection
+
+Concurrency in **Node.js** is handled differently compared to traditional multi-threaded environments. Here’s a breakdown of **how concurrency works in Node.js**:
+
+---
+
+### 🔁 1. **Single-threaded Event Loop**
+
+Node.js is **single-threaded**, meaning it runs JavaScript code in a single main thread. However, it achieves concurrency using the **event loop** and **asynchronous callbacks**.
+
+---
+
+### ⚙️ 2. **Non-blocking I/O and Asynchronous Operations**
+
+Node.js uses **non-blocking I/O**, which means it does **not wait** for an operation (like file read, DB query) to complete before moving to the next one.
+
+Example:
+
+```javascript
+const fs = require('fs');
+
+fs.readFile('file.txt', 'utf8', (err, data) => {
+  if (err) throw err;
+  console.log('File content:', data);
+});
+
+console.log('Reading file...');
 ```
 
+**Output:**
+
+```
+Reading file...
+File content: <file contents>
+```
+
+Even though `readFile` takes time, the main thread doesn't wait and continues execution.
+
+---
+
+### 🔄 3. **Event Loop Phases**
+
+The event loop cycles through several phases:
+
+* **Timers**: `setTimeout`, `setInterval`
+* **I/O callbacks**
+* **Idle, prepare**
+* **Poll**: Retrieves new I/O events
+* **Check**: `setImmediate()`
+* **Close callbacks**
+
+---
+
+### 🧵 4. **libuv and Thread Pool**
+
+Internally, Node.js uses **libuv**, a C++ library, to manage:
+
+* Asynchronous I/O
+* A **thread pool** (default 4 threads)
+
+Expensive operations (e.g., file system, crypto, DNS) are **delegated to the thread pool**, keeping the event loop free.
+
+Example using `crypto`:
+
+```javascript
+const crypto = require('crypto');
+
+console.time('hash');
+crypto.pbkdf2('password', 'salt', 100000, 64, 'sha512', () => {
+  console.timeEnd('hash');
+});
+```
+
+Even though this is CPU-intensive, it doesn't block the main thread because it runs in the thread pool.
+
+---
+
+### ✅ Summary
+
+| Component            | Role                                             |
+| -------------------- | ------------------------------------------------ |
+| **Event Loop**       | Manages the execution of async tasks/callbacks   |
+| **libuv**            | C++ library providing event loop and thread pool |
+| **Thread Pool**      | Handles expensive tasks like I/O, DNS, crypto    |
+| **Non-blocking I/O** | Enables efficient multitasking                   |
+
+---
+
+### 🚨 Important Note
+
+* Node.js is **concurrent** (can handle many tasks at once),
+* But **not parallel** (doesn't execute JS code in multiple threads unless using `Worker Threads`)
+Concurrency in Node.js is a key feature that allows it to handle multiple operations efficiently without requiring multiple threads, primarily due to its **single-threaded, event-driven architecture**. Here’s a concise explanation of how concurrency works in Node.js:
+
+### 1. **Single-Threaded Event Loop**
+- Node.js operates on a **single-threaded event loop** model. This means it uses one main thread (the event loop) to process JavaScript code and handle tasks.
+- The event loop continuously checks for events (like HTTP requests, file I/O, timers, etc.) and executes their associated callbacks when the events are ready.
+- Despite being single-threaded, Node.js achieves concurrency by offloading time-consuming operations to a **worker pool** or the operating system, allowing the main thread to remain free for other tasks.
+
+### 2. **Non-Blocking I/O**
+- Node.js uses **non-blocking I/O** operations, meaning that I/O tasks (like reading files, querying databases, or making network requests) don’t block the main thread.
+- When an I/O operation is initiated, Node.js delegates it to the underlying system (via the **libuv** library) and continues processing other tasks. Once the operation completes, a callback, Promise, or async/await handler is placed in the event queue for execution.
+
+### 3. **Event-Driven Architecture**
+- Node.js relies on an **event-driven** model where operations emit events (e.g., "data received" or "file read complete").
+- The **event loop** listens for these events and triggers the appropriate callback functions when events occur.
+- The event loop has several phases, such as:
+  - **Timers**: Executes callbacks for `setTimeout` and `setInterval`.
+  - **Pending Callbacks**: Handles I/O callbacks (e.g., file or network operations).
+  - **Poll**: Retrieves new I/O events and executes their callbacks.
+  - **Check**: Executes `setImmediate` callbacks.
+  - **Close**: Handles cleanup for closed resources.
+
+### 4. **Libuv and the Worker Pool**
+- The **libuv** library is at the core of Node.js’s concurrency model. It provides the event loop and manages asynchronous operations.
+- For CPU-intensive tasks (e.g., cryptographic operations, compression), Node.js offloads them to a **worker pool** (a set of threads managed by libuv). This keeps the main thread free for handling other tasks.
+- By default, the worker pool has 4 threads, but this can be adjusted.
+
+### 5. **Asynchronous Programming Patterns**
+Node.js supports concurrency through asynchronous programming constructs:
+- **Callbacks**: Functions passed as arguments to be executed after an operation completes.
+- **Promises**: A cleaner way to handle asynchronous operations, allowing chaining with `.then()` or `.catch()`.
+- **Async/Await**: Syntactic sugar over Promises, making asynchronous code look synchronous and easier to read.
+  
+Example:
+```javascript
+const fs = require('fs').promises;
+
+async function readFileAsync() {
+  try {
+    const data = await fs.readFile('example.txt', 'utf8');
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+readFileAsync();
+```
+Here, `fs.readFile` is non-blocking, and the event loop continues processing other tasks while the file is being read.
+
+### 6. **How Concurrency is Achieved**
+- **I/O-bound tasks**: Operations like network requests or file reading are offloaded to the operating system or libuv, allowing the event loop to handle other tasks concurrently.
+- **CPU-bound tasks**: Heavy computations are offloaded to the worker pool, preventing the main thread from being blocked.
+- **Event queue**: The event loop processes tasks in a queue, ensuring that callbacks are executed in the correct order without needing multiple threads.
+
+### 7. **Limitations and Considerations**
+- **Single-threaded limitation**: Since JavaScript execution is single-threaded, CPU-intensive tasks (e.g., complex calculations) can block the event loop unless offloaded to the worker pool or separate processes.
+- **Scaling concurrency**: For high concurrency, Node.js applications can use the `cluster` module to fork multiple processes, each running its own event loop, to utilize multiple CPU cores.
+- **Error handling**: Asynchronous code requires careful error handling to avoid uncaught exceptions or unhandled Promise rejections.
+
+### Summary
+Node.js achieves concurrency through its **single-threaded event loop**, **non-blocking I/O**, and **event-driven architecture**, with the help of **libuv** for managing asynchronous operations and a **worker pool** for CPU-intensive tasks. This allows Node.js to handle thousands of concurrent connections efficiently, making it ideal for I/O-heavy applications like web servers or APIs. However, for CPU-bound tasks, developers must use worker threads or clustering to avoid blocking the event loop
+
+Node.js is renowned for its ability to handle a large number of concurrent connections efficiently, despite being fundamentally **single-threaded** for its JavaScript execution. This might seem counter-intuitive, but it's achieved through a clever combination of architectural components:
+
+Here's a breakdown of how concurrency works in Node.js:
+
+1.  **Single-threaded JavaScript Execution:**
+    * The core of Node.js runs on a single thread. This means your JavaScript code, at any given moment, executes one line at a time. This simplifies programming as you don't have to worry about complex multi-threading issues like deadlocks or race conditions within your JavaScript code.
+    * This single thread is responsible for handling incoming requests, executing your business logic, and initiating I/O operations.
+
+2.  **Non-blocking I/O:**
+    * This is the cornerstone of Node.js's concurrency model. When Node.js encounters an I/O operation (like reading a file, querying a database, making an HTTP request), it doesn't wait for that operation to complete. Instead, it **offloads** the I/O task to the underlying operating system or a **thread pool** (provided by `libuv`, a C++ library).
+    * While the I/O operation is in progress, the single JavaScript thread is **free to continue executing other code** and handling other incoming requests. This is "non-blocking" because the main thread isn't blocked by slow I/O.
+
+3.  **Event Loop:**
+    * The **Event Loop** is the heart of Node.js's asynchronous nature. It's a continuous loop that constantly checks for tasks to be executed.
+    * When an I/O operation completes, a "callback" function associated with that operation is placed into an **event queue**.
+    * The Event Loop monitors the call stack (where currently executing JavaScript code resides) and the event queue. When the call stack is empty (meaning the main thread isn't busy with synchronous JavaScript), the Event Loop picks up the next callback from the event queue and pushes it onto the call stack for execution. This mechanism ensures that I/O-bound tasks don't block the main thread.
+
+4.  **`libuv` and Thread Pool:**
+    * Node.js leverages `libuv`, a multi-platform asynchronous I/O library. `libuv` provides the Event Loop, and crucially, it manages a **thread pool**.
+    * While JavaScript execution is single-threaded, `libuv` uses a pool of worker threads (typically 4 by default, but configurable) to handle computationally intensive tasks or certain I/O operations that cannot be handled directly by the operating system's asynchronous I/O mechanisms (e.g., certain file system operations, DNS lookups, cryptographic functions).
+    * When an operation is offloaded to the thread pool, it runs in a separate C++ thread, freeing up the main JavaScript thread. Once the task in the thread pool is complete, its associated callback is placed in the event queue for the Event Loop to process.
+
+5.  **Callbacks, Promises, and Async/Await:**
+    * Node.js relies heavily on **callbacks** to manage asynchronous operations. When an asynchronous task completes, a specified callback function is invoked.
+    * To make asynchronous code more readable and manageable, Node.js introduced **Promises**, which provide a more structured way to handle asynchronous operations and their eventual success or failure.
+    * Even further, **`async/await`** (built on top of Promises) provides a more synchronous-looking syntax for asynchronous code, making it even easier to write and understand.
+
+6.  **Cluster Module (for CPU-bound tasks and true parallelism):**
+    * While the single-threaded Event Loop is excellent for I/O-bound tasks, it can become a bottleneck for **CPU-bound tasks** (e.g., heavy computations, complex image processing). If a long-running synchronous CPU-bound operation is executed on the main thread, it will block the Event Loop, making the application unresponsive.
+    * To address this, Node.js provides the **`cluster` module**. This module allows you to fork multiple Node.js processes, each running on a separate CPU core. Each child process has its own Event Loop and can handle requests independently. This enables true **parallelism** and makes your Node.js application more scalable for multi-core systems.
+
+7.  **Worker Threads (for finer-grained parallelism):**
+    * Introduced later, **Worker Threads** provide a way to run JavaScript code in separate threads within the same Node.js process. Unlike the `cluster` module, which forks entire processes, worker threads offer finer-grained control and can share memory (though careful synchronization is needed to avoid race conditions). This is useful for offloading CPU-intensive tasks without the overhead of creating entirely new processes.
+
+**In summary:**
+
+Node.js achieves concurrency primarily through its **single-threaded, event-driven, non-blocking I/O model**. It doesn't use traditional multi-threading for JavaScript execution but intelligently delegates I/O operations and long-running tasks to underlying system calls and a thread pool. For true parallelism and handling CPU-intensive workloads, it provides the `cluster` module and `worker_threads` to leverage multiple CPU cores. This architecture makes Node.js highly efficient for building scalable network applications that handle many concurrent connections with minimal overhead.
