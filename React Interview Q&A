@@ -1,0 +1,217 @@
+1. **How would you center a div inside another div?**
+   - Use CSS Flexbox or Grid. With Flexbox:
+     ```css
+     .parent {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       height: 100vh;
+     }
+     .child {
+       width: 100px;
+       height: 100px;
+     }
+     ```
+     HTML:
+     ```html
+     <div class="parent">
+       <div class="child"></div>
+     </div>
+     ```
+
+2. **Explain Tree Shaking and Bundling in modern JavaScript applications.**
+   - **Tree Shaking**: A process to eliminate unused code (dead code) from the bundle during the build process, typically using ES6 modules.
+   - **Bundling**: Combining multiple JavaScript files and their dependencies into a single file for better performance. Tools like Webpack or Rollup handle this.
+   - Example: With Webpack, unused exports are removed if configured with `optimization.usedExports: true`.
+
+3. **Have you worked with state management libraries like Zustand?**
+   - Yes, Zustand is a lightweight state management library for React. It uses a simple store creation approach.
+   - Example:
+     ```javascript
+     import create from 'zustand';
+
+     const useStore = create((set) => ({
+       bears: 0,
+       increase: () => set((state) => ({ bears: state.bears + 1 })),
+     }));
+
+     function BearCounter() {
+       const { bears, increase } = useStore();
+       return <button onClick={increase}>Bears: {bears}</button>;
+     }
+     ```
+
+4. **Techniques for optimizing React performance.**
+   - Use `React.memo` for functional components, `useCallback` and `useMemo` for memoizing functions and values, and implement lazy loading with `React.lazy` and `Suspense`.
+   - Example:
+     ```javascript
+     const MemoComponent = React.memo(function MemoComponent(props) {
+       return <div>{props.value}</div>;
+     });
+     ```
+
+5. **Write a function to check if a string is a palindrome (without using reverse string logic).**
+   - Compare characters from start and end moving inward.
+   - Example:
+     ```javascript
+     function isPalindrome(str) {
+       str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+       for (let i = 0; i < Math.floor(str.length / 2); i++) {
+         if (str[i] !== str[str.length - 1 - i]) return false;
+       }
+       return true;
+     }
+     console.log(isPalindrome("racecar")); // true
+     ```
+
+6. **What's the output of console.log(this) in JavaScript?**
+   - Depends on context. In global scope (browser), it’s the `window` object. In a function, it depends on how it’s called (e.g., strict mode gives `undefined`).
+   - Example:
+     ```javascript
+     console.log(this); // window (non-strict mode)
+     function test() { console.log(this); }
+     test(); // undefined (strict mode)
+     ```
+
+7. **Key differences between arrow functions and regular functions.**
+   - Arrow functions don’t have their own `this` (inherit from enclosing scope), no `arguments` object, and can’t be used as constructors.
+   - Example:
+     ```javascript
+     const arrow = () => console.log(this);
+     function regular() { console.log(this); }
+     arrow(); // lexical this
+     regular(); // depends on call context
+     ```
+
+8. **Write a program using Promise and Async/Await.**
+   - Example:
+     ```javascript
+     function delay(ms) {
+       return new Promise(resolve => setTimeout(resolve, ms));
+     }
+
+     async function example() {
+       console.log("Start");
+       await delay(1000);
+       console.log("After 1 second");
+     }
+     example();
+     ```
+
+9. **Output-based questions on var, hoisting, and async/await.**
+   - Example:
+     ```javascript
+     console.log(a); var a = 5; // undefined (hoisting)
+     async function test() { await Promise.resolve(); console.log("Done"); }
+     test(); // "Done" after async resolution
+     ```
+
+10. **What are closures in JavaScript?**
+    - A closure is a function that retains access to its outer scope’s variables even after the outer function has finished executing.
+    - Example:
+      ```javascript
+      function outer() {
+        let count = 0;
+        return function inner() {
+          return ++count;
+        };
+      }
+      const counter = outer();
+      console.log(counter()); // 1
+      ```
+
+11. **How would you efficiently handle 5000 records from an API call for a dropdown?**
+    - Use pagination, virtual scrolling (e.g., with `react-virtualized`), or debounce search input to limit rendered items.
+    - Example (pseudo-code):
+      ```javascript
+      const fetchData = async (page) => {
+        const data = await api.get(`/data?page=${page}&limit=50`);
+        setRecords(data);
+      };
+      ```
+
+12. **How is Async/Await different from Promises?**
+    - `Async/Await` is syntactic sugar over Promises, making asynchronous code look synchronous. It handles `.then` and `.catch` internally.
+    - Example:
+      ```javascript
+      // Promise
+      fetch('/data').then(res => res.json()).catch(err => console.log(err));
+      // Async/Await
+      async function getData() {
+        try { const data = await fetch('/data'); } catch (err) { console.log(err); }
+      }
+      ```
+
+13. **What do the `^` and `~` signs mean in package.json?**
+    - `^`: Allows updates to the most recent minor version (e.g., ^1.2.3 allows 1.3.0 but not 2.0.0).
+    - `~`: Allows patch updates only (e.g., ~1.2.3 allows 1.2.4 but not 1.3.0).
+
+14. **What are dev dependencies in package.json?**
+    - Dependencies required only during development (e.g., testing, building), not in production. Listed under `"devDependencies"`.
+    - Example:
+      ```json
+      {
+        "devDependencies": {
+          "eslint": "^8.0.0"
+        }
+      }
+      ```
+
+15. **Explain Node.js and the Event Loop.**
+    - Node.js is a runtime for executing JavaScript outside the browser, built on Chrome’s V8 engine. The Event Loop handles asynchronous operations by offloading tasks to the system kernel and processing callbacks.
+    - Example:
+      ```javascript
+      console.log("Start");
+      setTimeout(() => console.log("Timeout"), 0);
+      console.log("End"); // Start, End, Timeout
+      ```
+
+16. **What is hoisting? For example:**
+    - Hoisting moves variable and function declarations to the top of their scope during compilation, but not initializations.
+    - Example:
+      ```javascript
+      console.log(a); // undefined
+      var a = 10;
+      ```
+
+17. **How does this behave in Node.js? Is it the same as in the browser?**
+    - In Node.js, `console.log(this)` in global scope returns an empty object `{}`, unlike the `window` object in browsers. The behavior differs due to different global objects.
+    - Example:
+      ```javascript
+      console.log(this); // {} in Node.js
+      ```
+
+18. **Write code for mul(2)(3)(4) = 24.**
+    - Use currying to chain multiplications.
+    - Example:
+      ```javascript
+      function mul(a) {
+        return function(b) {
+          return function(c) {
+            return a * b * c;
+          };
+        };
+      }
+      console.log(mul(2)(3)(4)); // 24
+      ```
+
+19. **Have you worked with Axios? What are interceptors?**
+    - Yes, Axios is a promise-based HTTP client. Interceptors are functions to modify requests or responses globally before they are handled.
+    - Example:
+      ```javascript
+      axios.interceptors.request.use(config => {
+        config.headers.auth = 'token';
+        return config;
+      });
+      ```
+
+20. **Why do we need the useRef hook in React?**
+    - `useRef` provides a way to persist values across renders without causing re-renders, often used for DOM access or storing mutable values.
+    - Example:
+      ```javascript
+      function TextInput() {
+        const inputRef = useRef(null);
+        useEffect(() => inputRef.current.focus());
+        return <input ref={inputRef} />;
+      }
+      ```
