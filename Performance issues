@@ -1,0 +1,19 @@
+# Performance Issues and Solutions in React, Node.js, and MongoDB
+
+## React: Unnecessary Re-renders in a List Component
+
+### Problematic Code
+This React component renders a large list and re-renders unnecessarily due to inline functions and lack of memoization.
+
+```jsx
+function ListComponent({ items }) {
+  return (
+    <div>
+      {items.map(item => (
+        <div key={item.id} onClick={() => console.log(item.id)}>
+          {item.name}
+        </div>
+      ))}
+    </div>
+  );
+}
