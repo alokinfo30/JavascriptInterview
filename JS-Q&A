@@ -926,4 +926,7 @@ Here's a breakdown of how concurrency works in Node.js:
 
 **In summary:**
 
-Node.js achieves concurrency primarily through its **single-threaded, event-driven, non-blocking I/O model**. It doesn't use traditional multi-threading for JavaScript execution but intelligently delegates I/O operations and long-running tasks to underlying system calls and a thread pool. For true parallelism and handling CPU-intensive workloads, it provides the `cluster` module and `worker_threads` to leverage multiple CPU cores. This architecture makes Node.js highly efficient for building scalable network applications that handle many concurrent connections with minimal overhead.
+Node.js achieves concurrency primarily through its **single-threaded, event-driven, non-blocking I/O model**. 
+It doesn't use traditional multi-threading for JavaScript execution but intelligently delegates I/O operations and long-running tasks to underlying system calls and a thread pool. 
+For true parallelism and handling CPU-intensive workloads, it provides the `cluster` module and `worker_threads` to leverage multiple CPU cores. This architecture makes Node.js highly efficient 
+for building scalable network applications that handle many concurrent connections with minimal overhead.
