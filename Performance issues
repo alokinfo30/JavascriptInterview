@@ -1,3 +1,46 @@
+
+console.log("Start"); // 1st
+queueMicrotask(() => {
+ console.log("QueueMicrotask callback"); //2nd
+});
+process.nextTick(() => {
+ console.log("NextTick callback");
+});
+setTimeout(() => {
+ console.log("Timeout callback"); //3rd
+ Promise.resolve().then(() => {
+   console.log("Promise inside Timeout");
+ });
+}, 0);
+console.log("Middle"); //4t
+Promise.resolve().then(() => {
+ console.log("Promise.then callback");
+});
+setImmediate(() => {
+ console.log("Immediate callback");
+});
+let id = setInterval(() => {
+ console.log(`Interval tick`);
+ clearInterval(id);
+});
+console.log("Last");
+
+
+// Output:
+
+// Start
+// Middle
+// Last
+// NextTick callback
+// QueueMicrotask callback
+// Promise.then callback
+// Timeout callback
+// Promise inside Timeout
+// Interval tick
+// Immediate callback
+
+
+
 Below are examples of code that demonstrate common performance issues in React, Node.js, and MongoDB, along with their solutions. Each example includes a problematic code snippet, an explanation of the performance issue, and the optimized code wrapped in an `<xaiArtifact/>` tag.
 
 <xaiArtifact artifact_id="ea992f42-abd8-418a-bd61-32aaa9f40ac2" artifact_version_id="19655e27-1f2a-4bef-90cf-a3bc92964061" title="Performance_Issues_Solutions.md" contentType="text/markdown">
