@@ -1,3 +1,14 @@
+
+How do you approach peer code reviews to ensure high-quality code?
+Answer: In peer code reviews, I focus on code quality, functionality, and maintainability. I check for:
+
+Correctness: Ensure the code meets requirements and handles edge cases.
+Readability: Verify clear variable names, comments, and modular structure.
+Performance: Identify inefficient algorithms or unnecessary re-renders.
+Security: Check for vulnerabilities like SQL injection or XSS.
+I use tools like ESLint and Prettier to enforce standards and provide constructive feedback. For example, in a recent review, I suggested replacing a nested loop with a Map for better performance, which reduced runtime by 20%. I also encourage open discussions to foster collaboration.
+
+
 Data security is critical when working with engineering teams, especially in a MERN stack environment (MongoDB, Express.js, React, Node.js) as you’ve mentioned previously, and in contexts like tutoring platforms or banking systems (from your interest in MySQL for banking). Below, I outline best practices for data security tailored to engineering teams, focusing on protecting sensitive data (e.g., student information, financial data), ensuring compliance, and fostering a security-first culture. These practices are drawn from industry standards, web resources, and real-world implementations, with examples relevant to your tech background and tutoring goals for USA/UK students.
 
 ### Key Data Security Practices for Engineering Teams
