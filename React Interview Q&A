@@ -1,3 +1,8 @@
+
+Explain how you manage state in a React application. Provide an example using React Hooks.
+Answer: In React, I manage state using React Hooks (useState, useReducer, useContext) for functional components, as they’re lightweight and scalable. For local component state, I use useState. For complex state logic, I use useReducer. For global state, I combine useContext with useReducer or use libraries like Redux Toolkit. I ensure minimal re-renders by memoizing components with React.memo or using useCallback/useMemo.
+
+
 1. **How would you center a div inside another div?**
    - Use CSS Flexbox or Grid. With Flexbox:
      ```css
