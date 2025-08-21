@@ -1,0 +1,107 @@
+👉 “ASCENDERS-BASL”
+
+Why this works:
+
+* Uses all the letters in order.
+* **ASCENDERS** is already a real word (part of typography, also means “rising upward”).
+* Then add **BASL** at the end (you can remember it as **Bulkhead, API, Strangler, Leader**).
+
+So the full acronym:
+
+* **A**PI Gateway
+* **S**ervice Registry
+* **C**ircuit Breaker
+* **E**vent (from CQRS/Events combo to make it smoother)
+* **N** (linker letter to make word readable)
+* **D**atabase per Service
+* **E**xternalized Config
+* **R**etry
+* **S**idecar
+
+Then **BASL** for the rest.
+
+---
+
+✅ Final single word: **ASCENDERSBASL**
+Easy to pronounce: *“Ah-sen-ders-Bas-el”*
+Meaning: It suggests *rising up* → just like microservices scaling and improving.
+
+
+👍. You want **memory tricks (mnemonics)** to quickly learn and recall these **microservice design patterns** with their meaning. Let’s build a simple **story-based trick** where each pattern connects like a chain.
+
+---
+
+### 🎯 Trick to Remember Microservice Design Patterns
+
+Imagine you’re running a **big city** where every **building = microservice**.
+To keep the city running smoothly, you apply these patterns:
+
+---
+
+1. **API Gateway 🌍**
+   🚪 *Think of it as the **main gate of the city*** where all visitors come first, get verified, and then routed inside.
+   → Centralized request handling, authentication, routing.
+
+2. **Service Registry 📌**
+   🗺️ *Every building is listed on a city map with its address.*
+   → Helps services auto-discover each other.
+
+3. **Circuit Breaker ⚡**
+   🚦 *Like a fuse in your house — if one light shorts, it cuts off to prevent a fire.*
+   → Stops cascading failures.
+
+4. **Saga 🔄**
+   🧾 *A chain of shops handling parts of a transaction (buy → ship → bill).* If one fails, it compensates.
+   → Manages distributed transactions.
+
+5. **CQRS 📊**
+   🏪 *One shop only takes orders (writes), another shop only delivers info (reads).*
+   → Splits read/write for performance.
+
+6. **Bulkhead 🛑**
+   🚢 *Like compartments in a ship — if one floods, the rest stay safe.*
+   → Contain failures, avoid system-wide crash.
+
+7. **Sidecar 🚗**
+   🛵 *A small scooter attached to a car, helping with monitoring and security.*
+   → Attach helper services.
+
+8. **API Composition 🔗**
+   🧩 *Combining different small services into a big service like assembling Lego pieces.*
+   → Aggregate microservices into richer APIs.
+
+9. **Event-Driven Architecture 📢**
+   📯 *Like loudspeakers announcing events — everyone who cares listens.*
+   → Services communicate via events.
+
+10. **Database per Service 💽**
+    🏦 *Each shop in the city has its own cash register.*
+    → Independent databases, no conflicts.
+
+11. **Retry 🔁**
+    📞 *If a phone call fails, you redial until it connects.*
+    → Auto-retry failed requests.
+
+12. **Externalized Configuration ⚙️**
+    📂 *Keep all city rules in a central rulebook outside the buildings.*
+    → Store configs separately for easy updates.
+
+13. **Strangler Fig 🌱**
+    🌳 *A new tree grows around an old one, replacing it bit by bit.*
+    → Modernize legacy systems gradually.
+
+14. **Leader Election 👑**
+    🧑‍⚖️ *Citizens vote for a mayor to coordinate city decisions.*
+    → Assign a leader for coordination.
+
+---
+
+### 🧠 Super-Mnemonic Story
+
+"At the **Gateway** 🌍, I check the **Registry** 📌 to find my way. If lights fail, a **Circuit Breaker** ⚡ saves me.
+I run a **Saga** 🔄 across shops, using **CQRS** 📊 for order and info.
+A **Bulkhead** 🛑 ship saves the city, with a **Sidecar** 🚗 helper.
+I use **API Composition** 🔗 Lego to build features, and follow **Events** 📢 like city announcements.
+Each shop keeps its own **Database** 💽. If calls fail, I **Retry** 🔁.
+Configs are in a **Rulebook** ⚙️, old systems replaced by a **Strangler Fig** 🌱.
+Finally, a **Leader** 👑 keeps order.
