@@ -2,6 +2,97 @@
 // Without using BUILT-IN Methods
 
 
+Of course. Here is the JavaScript code to solve the "Merge Intervals" problem shown in your image.
+
+The core idea is to first **sort** the intervals by their starting points. Then, you iterate through the sorted intervals, merging the current interval with the previous one if they overlap.
+
+```javascript
+/**
+ * @param {number[][]} intervals
+ * @return {number[][]}
+ */
+function mergeIntervals(intervals) {
+  // 1. Handle edge cases: if there are 0 or 1 intervals, no merging is needed.
+  if (intervals.length <= 1) {
+    return intervals;
+  }
+
+  // 2. Sort the intervals based on their starting value (the first number in each pair).
+  intervals.sort((a, b) => a[0] - b[0]);
+
+  // 3. Initialize a result array with the first interval.
+  const result = [intervals[0]];
+
+  // 4. Iterate through the rest of the intervals.
+  for (let i = 1; i < intervals.length; i++) {
+    const currentInterval = intervals[i];
+    const lastMergedInterval = result[result.length - 1];
+
+    // 5. Check for an overlap.
+    // An overlap occurs if the start of the current interval is less than or equal to the end of the last merged interval.
+    if (currentInterval[0] <= lastMergedInterval[1]) {
+      // If they overlap, merge them by updating the end of the last merged interval.
+      // The new end is the maximum of the two interval ends.
+      lastMergedInterval[1] = Math.max(lastMergedInterval[1], currentInterval[1]);
+    } else {
+      // If there's no overlap, add the current interval to the result array.
+      result.push(currentInterval);
+    }
+  }
+
+  return result;
+}
+
+// --- How to use it with your example ---
+
+const input = [[1, 3], [5, 8], [7, 10], [15, 20]];
+const output = mergeIntervals(input);
+
+console.log("Input:", JSON.stringify(input));
+console.log("Output:", JSON.stringify(output));
+// Expected Output: [[1,3],[5,10],[15,20]]
+```
+
+-----
+
+### \#\# How the Code Works ⚙️
+
+1.  **Sort:** The function first sorts the array of intervals based on their **start time**. This is the most critical step because it ensures that we can process intervals in an orderly fashion.
+
+      * `[ [1,3], [5,8], [7,10], [15,20] ]` (Your input is already sorted).
+
+2.  **Initialize:** It creates a `result` array and starts by adding the very first interval `[1,3]` to it.
+
+3.  **Iterate and Compare:** The code then loops through the remaining intervals. In each step, it compares the **current interval** with the **last interval** that was added to the `result` array.
+
+      * **Iteration 1:**
+
+          * **Current Interval:** `[5,8]`
+          * **Last in Result:** `[1,3]`
+          * **Overlap Check:** Does `5` (start of current) \<= `3` (end of last)? **No.**
+          * **Action:** No overlap, so `[5,8]` is added to the `result`. `result` is now `[ [1,3], [5,8] ]`.
+
+      * **Iteration 2:**
+
+          * **Current Interval:** `[7,10]`
+          * **Last in Result:** `[5,8]`
+          * **Overlap Check:** Does `7` \<= `8`? **Yes.**
+          * **Action:** There is an overlap\! The end of the last interval in `result` (`[5,8]`) is updated to be the maximum of `8` and `10`. `result` becomes `[ [1,3], [5,10] ]`.
+
+      * **Iteration 3:**
+
+          * **Current Interval:** `[15,20]`
+          * **Last in Result:** `[5,10]`
+          * **Overlap Check:** Does `15` \<= `10`? **No.**
+          * **Action:** No overlap, so `[15,20]` is added to the `result`. `result` is now `[ [1,3], [5,10], [15,20] ]`.
+
+4.  **Return:** After the loop finishes, the `result` array contains all the merged intervals.
+
+
+
+
+
+
 const arr = [5, 2, 9, 1, 5, 6];
 
 // Descending Bubble Sort without using array methods
@@ -812,3 +903,4 @@ function printPattern(n, current = n) {
 
 // Call the function with the input parameter 5
 printPattern(5);
+
