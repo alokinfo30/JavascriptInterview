@@ -930,3 +930,202 @@ Node.js achieves concurrency primarily through its **single-threaded, event-driv
 It doesn't use traditional multi-threading for JavaScript execution but intelligently delegates I/O operations and long-running tasks to underlying system calls and a thread pool. 
 For true parallelism and handling CPU-intensive workloads, it provides the `cluster` module and `worker_threads` to leverage multiple CPU cores. This architecture makes Node.js highly efficient 
 for building scalable network applications that handle many concurrent connections with minimal overhead.
+
+
+create code using node typescript alongwith advanced concepts and optimized performance
+
+Perfect, thanks for sharing the task.  
+The assignment is asking you to:
+
+1. **Create a Node TypeScript project.**  
+2. **Write two functions** to fetch results from **PokéAPI**:
+   - `https://pokeapi.co/api/v2/pokemon` → list of Pokémon.
+   - `https://pokeapi.co/api/v2/pokemon/{name}` → details of a Pokémon by name.
+3. **Console log results** with clean, production-quality code.
+
+Since you asked for **advanced concepts and optimized performance**, I’ll include:
+- **TypeScript strict typing**.  
+- **Axios** for HTTP requests with proper error handling.  
+- **Generics and async/await**.  
+- **Caching** to avoid redundant API calls.  
+- **Separation of concerns** (services, types, utils).  
+- **Retry logic with exponential backoff** for resilience.
+
+***
+
+## 📂 Project Structure
+
+```
+pokemon-api/
+│── src/
+│   ├── index.ts
+│   ├── services/
+│   │   └── pokemonService.ts
+│   ├── types/
+│   │   └── pokemonTypes.ts
+│   └── utils/
+│       └── httpClient.ts
+│── tsconfig.json
+│── package.json
+```
+
+***
+
+## 🔹 `package.json`
+```json
+{
+  "name": "pokemon-api",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.1"
+  }
+}
+```
+
+***
+
+## 🔹 `tsconfig.json`
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+***
+
+## 🔹 `src/types/pokemonTypes.ts`
+```ts
+export interface PokemonListResponse {
+  count: number;
+  results: { name: string; url: string }[];
+}
+
+export interface PokemonDetails {
+  id: number;
+  name: string;
+  height: number;
+  weight: number;
+  abilities: { ability: { name: string } }[];
+  sprites: { front_default: string };
+}
+```
+
+***
+
+## 🔹 `src/utils/httpClient.ts`  
+(A wrapper around Axios for retries and caching)
+
+```ts
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+
+class HttpClient {
+  private client: AxiosInstance;
+  private cache = new Map<string, any>();
+
+  constructor(baseURL: string) {
+    this.client = axios.create({ baseURL, timeout: 5000 });
+  }
+
+  private async retry<T>(fn: () => Promise<AxiosResponse<T>>, retries = 3, delay = 500): Promise<T> {
+    try {
+      const response = await fn();
+      return response.data;
+    } catch (error) {
+      if (retries > 0) {
+        console.warn(`Retrying... attempts left: ${retries}`);
+        await new Promise((res) => setTimeout(res, delay));
+        return this.retry(fn, retries - 1, delay * 2);
+      }
+      throw error;
+    }
+  }
+
+  async get<T>(url: string): Promise<T> {
+    if (this.cache.has(url)) {
+      return this.cache.get(url);
+    }
+    const data = await this.retry<T>(() => this.client.get(url));
+    this.cache.set(url, data);
+    return data;
+  }
+}
+
+export const httpClient = new HttpClient("https://pokeapi.co/api/v2");
+```
+
+***
+
+## 🔹 `src/services/pokemonService.ts`
+```ts
+import { httpClient } from "../utils/httpClient";
+import { PokemonListResponse, PokemonDetails } from "../types/pokemonTypes";
+
+export class PokemonService {
+  static async getPokemonList(limit = 10): Promise<PokemonListResponse> {
+    return await httpClient.get<PokemonListResponse>(`/pokemon?limit=${limit}`);
+  }
+
+  static async getPokemonDetails(name: string): Promise<PokemonDetails> {
+    return await httpClient.get<PokemonDetails>(`/pokemon/${name.toLowerCase()}`);
+  }
+}
+```
+
+***
+
+## 🔹 `src/index.ts`
+```ts
+import { PokemonService } from "./services/pokemonService";
+
+const main = async () => {
+  try {
+    console.log("Fetching Pokémon list...");
+    const list = await PokemonService.getPokemonList(5);
+    console.log("Pokémon List:", list.results.map(p => p.name));
+
+    console.log("\nFetching details for Pikachu...");
+    const pikachu = await PokemonService.getPokemonDetails("pikachu");
+    console.log("Pikachu Details:", {
+      id: pikachu.id,
+      name: pikachu.name,
+      height: pikachu.height,
+      weight: pikachu.weight,
+      abilities: pikachu.abilities.map(a => a.ability.name),
+      sprite: pikachu.sprites.front_default
+    });
+
+  } catch (error) {
+    console.error("Error:", (error as Error).message);
+  }
+};
+
+main();
+```
+
+***
+
+## 🚀 Features Included
+✔ **Error handling with retries**  
+✔ **Caching responses** to avoid redundant API calls  
+✔ **TypeScript strict typing** for safer code  
+✔ **Production-ready modular structure**  
+✔ **Extensible (you can add more services easily)**  
+
