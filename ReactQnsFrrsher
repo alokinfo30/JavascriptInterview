@@ -1,0 +1,185 @@
+Alright, let’s continue and build on the **30-day React.js fresher interview plan** by adding **commonly asked React.js interview questions with clear, short sample answers**. This way, while you’re following the daily/weekly structure, you’ll also prepare for the type of questions you’ll face.
+
+---
+
+# 🔑 Common React.js Interview Questions & Answers
+
+### **Basics**
+
+**Q1. What is React?**
+A: React is a JavaScript library for building user interfaces. It focuses on creating reusable UI components and uses a virtual DOM for efficient rendering.
+
+**Q2. What are components in React?**
+A: Components are the building blocks of a React application. They can be functional (using hooks) or class-based.
+
+**Q3. What are props?**
+A: Props are inputs to components. They are read-only and help make components reusable.
+
+**Q4. What is the difference between state and props?**
+A: Props are external, passed from parent to child, and cannot be modified by the child. State is internal to a component and can change over time.
+
+---
+
+### **React Core**
+
+**Q5. What is JSX?**
+A: JSX is a syntax extension that lets us write HTML-like code in JavaScript. It makes UI code more readable and easier to write.
+
+**Q6. What is the virtual DOM?**
+A: The virtual DOM is a lightweight copy of the actual DOM. React uses it to detect changes and update only the parts of the UI that need re-rendering.
+
+**Q7. Explain useState hook.**
+A: `useState` is a hook that lets you add state to functional components. It returns the current state and a function to update it.
+
+**Q8. What is useEffect used for?**
+A: `useEffect` is used to perform side effects like data fetching, subscriptions, or manually updating the DOM in functional components.
+
+---
+
+### **Intermediate**
+
+**Q9. What is conditional rendering in React?**
+A: Conditional rendering means showing different UI elements based on conditions, often using `if`, `ternary operators`, or logical `&&`.
+
+**Q10. How does React handle lists?**
+A: By mapping over arrays and rendering each element. A unique `key` prop should be given to each element for efficient rendering.
+
+**Q11. What are controlled components?**
+A: Components where form inputs (like input, textarea) are controlled by React state, ensuring a single source of truth.
+
+**Q12. What is prop drilling and how to avoid it?**
+A: Prop drilling is passing props down multiple levels. It can be avoided using **Context API** or state management libraries like Redux.
+
+---
+
+### **Advanced / Interview Specific**
+
+**Q13. How does React Router work?**
+A: React Router is used for navigation in single-page apps. It updates the UI without reloading the page using client-side routing.
+
+**Q14. What is React.memo?**
+A: `React.memo` is a higher-order component that prevents unnecessary re-renders by memoizing the output of a component if its props don’t change.
+
+**Q15. What are error boundaries?**
+A: Error boundaries are React components that catch JavaScript errors in their child components and display a fallback UI instead of crashing the whole app.
+
+**Q16. How do you fetch data in React?**
+A: Using `fetch` or `axios` inside `useEffect`. Example:
+
+```js
+useEffect(() => {
+  fetch('/api/data')
+    .then(res => res.json())
+    .then(data => setData(data));
+}, []);
+```
+
+**Q17. What are keys in React and why are they important?**
+A: Keys help React identify which items have changed, been added, or removed. They make list rendering efficient.
+
+---
+
+### **Behavioral / Project Related**
+
+**Q18. Tell me about a React project you worked on.**
+A: (You should prepare a 1–2 minute explanation of your small project, like a Todo app or Weather app, focusing on components, state, API calls, and routing.)
+
+**Q19. How do you optimize a React app?**
+A: By using memoization (`React.memo`, `useCallback`, `useMemo`), lazy loading, code splitting, and avoiding unnecessary re-renders.
+
+**Q20. Why should we hire you for a React.js fresher role?**
+A: Because I have a strong foundation in JavaScript and React, have built small projects, and I’m eager to learn and contribute to real-world applications quickly.
+
+---
+
+👉 By combining these **Q\&A with the 30-day plan**, you’ll be ready for both coding tests and HR/technical rounds.
+
+
+Perfect. Let’s continue by layering in the **cheat sheet style notes** you can keep for last-minute revision. I’ll organize it into **JavaScript essentials**, **React hooks & concepts**, and **Interview quick facts**.
+
+---
+
+# ⚡ React.js Interview Quick Revision Cheat Sheet
+
+### **JavaScript Essentials**
+
+* **let vs const vs var** → `let` (block scope), `const` (block scope, no reassign), `var` (function scope).
+* **Arrow functions** → No `this` binding. Useful in callbacks.
+* **map/filter/reduce** → Most common array methods in React projects.
+* **== vs ===** → `===` checks value + type. Always prefer `===`.
+* **Closure** → A function “remembers” variables from its outer scope even after the outer function finishes.
+* **Promise** → `.then/.catch` chaining.
+* **async/await** → Cleaner way to handle async code.
+
+---
+
+### **React Basics**
+
+* **JSX** → JavaScript + XML, must return a single parent element.
+* **Component Types** →
+
+  * Functional (with hooks, preferred).
+  * Class (older, with lifecycle methods).
+* **Props** → Read-only inputs.
+* **State** → Local data, mutable with `useState`.
+* **Keys** → Needed for lists. Must be unique and stable.
+
+---
+
+### **React Hooks**
+
+* **useState** → Add local state.
+* **useEffect** → Side effects (fetching, subscriptions). Runs after render.
+* **useContext** → Avoids prop drilling.
+* **useReducer** → Alternative to `useState` for complex state.
+* **useMemo** → Memoize values.
+* **useCallback** → Memoize functions.
+* **useRef** → Access DOM elements or persist values across renders.
+
+---
+
+### **React Interview Quick Facts**
+
+* **Virtual DOM** → Efficient diffing, updates only what changes.
+* **Controlled Components** → Input values controlled by state.
+* **Uncontrolled Components** → Inputs handled by DOM itself.
+* **Lifting State Up** → Share state between child components via the parent.
+* **Prop Drilling** → Passing props multiple levels down. Avoid with Context API.
+* **React Router** → Client-side routing, avoids full page reloads.
+* **Error Boundaries** → Catch errors in child components.
+* **Lazy Loading** → `React.lazy` + `Suspense` for code splitting.
+* **Optimization** → React.memo, useMemo, useCallback, pagination, avoid inline functions.
+
+---
+
+### **Common Q\&A Snippets**
+
+* **Q: Difference between functional and class components?**
+  A: Functional are simpler, use hooks, and are the modern standard. Class components use lifecycle methods.
+
+* **Q: How does useEffect work with dependencies?**
+  A: Empty array `[]` → runs once.
+  No array → runs after every render.
+  `[dep]` → runs when `dep` changes.
+
+* **Q: What happens if you don’t give keys in lists?**
+  A: React may re-render incorrectly and cause performance issues.
+
+* **Q: Why is React called declarative?**
+  A: You describe *what* UI should look like, React handles *how* to update it.
+
+---
+
+### **Last-Minute Project Prep**
+
+* Keep one small project ready to explain (Todo App, Weather App, Movie App).
+* Focus on: Components, State, API call, Routing, and Handling errors.
+* Be able to say: “I built this using functional components, useState/useEffect for state and data fetching, and React Router for navigation.”
+
+---
+
+👉 This cheat sheet is meant for a **final 2-day crash revision** before interviews.
+
+Would you like me to turn this into a **PDF (2–3 pages, neatly formatted with sections, tables, and code snippets)** so you can print or keep it for offline quick revision?
+
+
