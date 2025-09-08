@@ -1,6 +1,111 @@
 
 // Without using BUILT-IN Methods
+const numbers = [1,2,3,4,5,6,7,8,9,10];  
 
+const evenNumbers = [];
+
+for(let i = 0; i < numbers.length; i++) {
+
+    if(numbers[i] % 2 === 0) {
+
+        evenNumbers.push(numbers[i]);
+
+    }
+
+}
+
+console.log('Even numbers:', evenNumbers);
+ 
+
+
+function filterArray(array, callback) {
+
+    // console.log(callback);
+
+    const result = [];
+
+for(let i = 0; i < array.length; i++) {
+
+    if(callback(array[i], i, array)) {
+
+        result.push(array[i]);
+
+    }
+
+}
+
+console.log(result);
+
+return result;
+
+}
+
+const numbers = [1,2,3,4,5,6,7,8,9,10];  
+ 
+const evenNumbers = filterArray(numbers,function(num) {
+
+    num % 2 === 0;
+
+});
+ 
+ 
+console.log('Even numbers:', evenNumbers);
+ 
+function filterArray(array, callback) {
+
+    // console.log(callback);
+
+    const result = [];
+
+for(let i = 0; i < array.length; i++) {
+
+    if(callback(array[i], i, array)) {
+
+        result.push(array[i]);
+
+    }
+
+}
+
+// console.log(result);
+
+return result;
+
+}
+
+const numbers = [1,2,3,4,5,6,7,8,9,10];  
+ 
+const evenNumbers = filterArray(numbers,function(num) {
+
+  return  num % 2 === 0;
+
+});
+ 
+ 
+console.log('Even numbers:', evenNumbers);
+ 
+function printNumbers() {
+
+    for(let i=1; i<=10; i++) {
+
+        // (function(index){
+
+            setTimeout(function() {
+
+                console.log(i);
+
+                console.log(i * 1000);
+
+            }, i * 1000);
+
+        // })(i);
+
+    }
+
+}
+ 
+printNumbers();
+ 
 
 Of course. Here is the JavaScript code to solve the "Merge Intervals" problem shown in your image.
 
@@ -903,4 +1008,5 @@ function printPattern(n, current = n) {
 
 // Call the function with the input parameter 5
 printPattern(5);
+
 
