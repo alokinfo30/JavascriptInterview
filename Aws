@@ -136,3 +136,19 @@ With support for up to 10 GB memory and 6 vCPUs, Lambda can handle heavy workloa
 AWS Lambda is a powerful tool for building scalable, cost-effective, and event-driven applications. Its versatility makes it suitable for a wide range of use cases, from real-time data processing and API backends to AI workflows and automation. By leveraging Lambda, developers can focus on writing code rather than managing infrastructure, accelerating innovation and reducing operational overhead.
 
 For more details, you can explore the AWS Lambda Documentation or refer to customer case studies on the AWS website.
+
+
+
+When to Use Merge vs. Rebase
+
+Use Merge when:
+
+· You are merging a feature branch into the main branch (e.g., main or develop). This preserves the exact history of your development process, which can be useful.
+· The branch is public and shared with other developers. Merging is safe.
+· You want a clear record of when a specific feature was integrated.
+
+Use Rebase when:
+
+· You are working on a local feature branch and want to incorporate the latest changes from main to keep your branch up-to-date. This is the most common use case.
+  · Instead of git merge main, do git rebase main. This puts your neat feature work on top of the latest main code, avoiding a merge commit.
+· You want to clean up and simplify your local commit history
