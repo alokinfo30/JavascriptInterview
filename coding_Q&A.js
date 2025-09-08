@@ -17,40 +17,6 @@ for(let i = 0; i < numbers.length; i++) {
 console.log('Even numbers:', evenNumbers);
  
 
-
-function filterArray(array, callback) {
-
-    // console.log(callback);
-
-    const result = [];
-
-for(let i = 0; i < array.length; i++) {
-
-    if(callback(array[i], i, array)) {
-
-        result.push(array[i]);
-
-    }
-
-}
-
-console.log(result);
-
-return result;
-
-}
-
-const numbers = [1,2,3,4,5,6,7,8,9,10];  
- 
-const evenNumbers = filterArray(numbers,function(num) {
-
-    num % 2 === 0;
-
-});
- 
- 
-console.log('Even numbers:', evenNumbers);
- 
 function filterArray(array, callback) {
 
     // console.log(callback);
@@ -1008,5 +974,6 @@ function printPattern(n, current = n) {
 
 // Call the function with the input parameter 5
 printPattern(5);
+
 
 
