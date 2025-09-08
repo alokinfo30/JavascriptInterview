@@ -1,5 +1,248 @@
 
 // Without using BUILT-IN Methods
+
+Convert Nested Object to Simple Object (Without Functions)
+
+Here are several ways to convert a nested object into a simple flat object using dot notation, without using any functions:
+
+Method 1: Simple One-Level Flattening (Manual)
+
+```javascript
+// Original nested object
+const nestedObject = {
+  name: 'John',
+  age: 30,
+  address: {
+    street: '123 Main St',
+    city: 'New York',
+    country: 'USA'
+  },
+  contact: {
+    email: 'john@example.com',
+    phone: '555-1234'
+  }
+};
+
+// Convert to simple object manually
+const simpleObject = {
+  name: nestedObject.name,
+  age: nestedObject.age,
+  'address.street': nestedObject.address.street,
+  'address.city': nestedObject.address.city,
+  'address.country': nestedObject.address.country,
+  'contact.email': nestedObject.contact.email,
+  'contact.phone': nestedObject.contact.phone
+};
+
+console.log(simpleObject);
+```
+
+Method 2: Using Object Spread Operator
+
+```javascript
+const nestedObject = {
+  user: {
+    personal: {
+      firstName: 'Alice',
+      lastName: 'Smith',
+      age: 25
+    },
+    preferences: {
+      theme: 'dark',
+      language: 'en'
+    }
+  },
+  settings: {
+    notifications: true,
+    privacy: 'public'
+  }
+};
+
+// Flatten using spread operator
+const simpleObject = {
+  ...nestedObject.user.personal,
+  'preferences.theme': nestedObject.user.preferences.theme,
+  'preferences.language': nestedObject.user.preferences.language,
+  'settings.notifications': nestedObject.settings.notifications,
+  'settings.privacy': nestedObject.settings.privacy
+};
+
+console.log(simpleObject);
+```
+
+Method 3: For Complex Objects (Manual Assignment)
+
+```javascript
+const complexObject = {
+  data: {
+    users: [
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' }
+    ],
+    metadata: {
+      count: 2,
+      timestamp: '2023-12-07'
+    }
+  },
+  status: 'success',
+  code: 200
+};
+
+// Manual conversion
+const flatObject = {
+  status: complexObject.status,
+  code: complexObject.code,
+  'data.metadata.count': complexObject.data.metadata.count,
+  'data.metadata.timestamp': complexObject.data.metadata.timestamp,
+  'data.users': complexObject.data.users // arrays are kept as-is
+};
+
+console.log(flatObject);
+```
+
+Method 4: Using Object Destructuring
+
+```javascript
+const product = {
+  id: 101,
+  details: {
+    name: 'Laptop',
+    specifications: {
+      processor: 'Intel i7',
+      ram: '16GB',
+      storage: '512GB SSD'
+    },
+    price: 999.99
+  },
+  inStock: true
+};
+
+// Destructure and create flat object
+const { id, inStock } = product;
+const { name, price } = product.details;
+const { processor, ram, storage } = product.details.specifications;
+
+const flatProduct = {
+  id,
+  inStock,
+  'details.name': name,
+  'details.price': price,
+  'details.specifications.processor': processor,
+  'details.specifications.ram': ram,
+  'details.specifications.storage': storage
+};
+
+console.log(flatProduct);
+```
+
+Method 5: For Multiple Similar Objects
+
+```javascript
+// Array of nested objects
+const users = [
+  {
+    id: 1,
+    info: {
+      name: 'John Doe',
+      contact: {
+        email: 'john@email.com',
+        phone: '123-456-7890'
+      }
+    }
+  },
+  {
+    id: 2,
+    info: {
+      name: 'Jane Smith',
+      contact: {
+        email: 'jane@email.com',
+        phone: '098-765-4321'
+      }
+    }
+  }
+];
+
+// Convert each object manually
+const flatUsers = [
+  {
+    id: users[0].id,
+    'info.name': users[0].info.name,
+    'info.contact.email': users[0].info.contact.email,
+    'info.contact.phone': users[0].info.contact.phone
+  },
+  {
+    id: users[1].id,
+    'info.name': users[1].info.name,
+    'info.contact.email': users[1].info.contact.email,
+    'info.contact.phone': users[1].info.contact.phone
+  }
+];
+
+console.log(flatUsers);
+```
+
+Method 6: Using Object.assign()
+
+```javascript
+const company = {
+  name: 'Tech Corp',
+  headquarters: {
+    address: '456 Tech Ave',
+    city: 'San Francisco',
+    country: 'USA'
+  },
+  employees: 500,
+  founded: 2010
+};
+
+// Using Object.assign()
+const flatCompany = Object.assign(
+  {},
+  {
+    name: company.name,
+    employees: company.employees,
+    founded: company.founded
+  },
+  {
+    'headquarters.address': company.headquarters.address,
+    'headquarters.city': company.headquarters.city,
+    'headquarters.country': company.headquarters.country
+  }
+);
+
+console.log(flatCompany);
+```
+
+Sample Output:
+
+All methods will produce similar output formats:
+
+```javascript
+// For the first example:
+{
+  name: 'John',
+  age: 30,
+  'address.street': '123 Main St',
+  'address.city': 'New York',
+  'address.country': 'USA',
+  'contact.email': 'john@example.com',
+  'contact.phone': '555-1234'
+}
+```
+
+Key Points:
+
+1. Manual Approach: You explicitly map each nested property to a flat key
+2. Dot Notation: Use quotes for keys containing dots (e.g., 'address.street')
+3. Arrays: Can be kept as-is or handled differently based on needs
+4. No Functions: These methods don't use any custom functions or recursion
+5. Explicit: You have full control over the structure of the output
+
+Choose the method that best fits your specific object structure and requirements!
+
+
+
+
 const numbers = [1,2,3,4,5,6,7,8,9,10];  
 
 const evenNumbers = [];
@@ -974,6 +1217,7 @@ function printPattern(n, current = n) {
 
 // Call the function with the input parameter 5
 printPattern(5);
+
 
 
 
