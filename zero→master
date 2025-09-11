@@ -531,6 +531,158 @@ Do you want me to make a complete “free-only” Todo project repo scaffold for
 
 
 
+Dockerfile examples
+
+Backend Dockerfile
+
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --production
+CMD ["node", "dist/index.js"]
+
+Frontend Dockerfile (static)
+
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM nginx:stable-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]
+
+
+---
+
+5 — Jenkinsfile (declarative pipeline example)
+
+pipeline {
+  agent any
+  environment {
+    IMAGE = "myrepo/todo-api:${env.BUILD_NUMBER}"
+  }
+  stages {
+    stage('Checkout') { steps { checkout scm } }
+    stage('Install') { steps { sh 'npm ci' } }
+    stage('Lint & Test') {
+      steps {
+        sh 'npm run lint'
+        sh 'npm test -- --coverage'
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'npm run build'
+      }
+    }
+    stage('Docker Build & Push') {
+      steps {
+        sh '''
+          docker build -t $IMAGE .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push $IMAGE
+        '''
+      }
+    }
+    stage('Deploy') {
+      steps {
+        // simple deploy step, e.g. call kubectl or ssh
+        echo "Trigger deployment with image $IMAGE"
+      }
+    }
+  }
+  post {
+    always { junit 'reports/**/*.xml'; archiveArtifacts artifacts: 'dist/**', fingerprint: true }
+    failure { mail to: 'you@example.com', subject: "Build failed: ${env.BUILD_NUMBER}", body: "See Jenkins" }
+  }
+}
+
+
+---
+
+6 — Git & Jira practical workflow
+
+Branch names: feature/JIRA-123-add-auth or bug/JIRA-456-fix-login.
+
+PR template: include summary, testing steps, linked Jira ticket, screenshots.
+
+Jira tickets: always include acceptance criteria and minimal reproduction steps.
+
+Do code reviews: request at least one reviewer. Address comments by pushing new commits to same branch.
+
+
+
+---
+
+7 — Basic AWS path (what to learn in order)
+
+1. S3 for static hosting and assets.
+
+
+2. IAM basics: roles, policies, least privilege.
+
+
+3. EC2 and security groups to host a Docker container.
+
+
+4. RDS for Postgres if you need relational DB.
+
+
+5. ECR + ECS (Fargate) for container orchestration.
+
+
+6. CloudWatch for logs and simple alarms.
+
+
+7. Later: load balancer, autoscaling, VPC basics. Practice: deploy frontend to S3/CloudFront and backend to EC2 or ECS.
+
+
+
+
+---
+
+8 — Testing, observability, security (short)
+
+Tests: unit with Jest, integration with supertest, E2E with Playwright or Cypress.
+
+Logs: structured JSON logs, ship to CloudWatch or ELK.
+
+Security: use helmet in Express, validate inputs, limit request size, use HTTPS in production.
+
+Secrets: store in AWS Secrets Manager or Parameter Store, not in .env on prod.
+
+
+
+---
+
+9 — Interview prep: how to answer and small scripts
+
+Be concise. Structure answers: definition, one-line explanation, short example.
+
+Examples:
+
+How does Node handle concurrency?
+Node runs a single main thread for JS. It uses an event loop and non-blocking I/O so many requests can be handled simultaneously. CPU-heavy tasks should be offloaded to worker threads or separate services.
+
+Explain JWT vs session.
+Sessions store state on the server and the client holds a session id. JWT contains claims and is stateless on the server side; you must handle token revocation via blacklists or short expiry plus refresh tokens.
+
+React hooks vs class components.
+Hooks let you use state and lifecycle in functional components. They encourage smaller composable logic with custom hooks.
+
+
+Practice these: speak aloud, record 2-minute explanations, and fix grammar/pauses.
 
 
 
