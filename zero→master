@@ -1,0 +1,306 @@
+Project flow you will use every time (8-step checklist)
+
+1. Goal: 1-sentence. e.g. “Simple Todo app with user auth and CRUD.”
+2. User stories (Jira tickets): write 5 tickets minimum. Example: As a user, I want to sign up, so I can save my todos.
+3. Data model: list entities and fields.
+4. API contract: endpoints, method, sample request/response.
+5. Wireframe: rough sketch for list, add, edit.
+6. Dev tasks: break each story into sub-tasks, assign branches like feature/T123-auth.
+7. CI & test: lint, unit tests, integration tests, build stage.
+8. Deploy & monitor: one environment first (staging), then production.
+
+
+Perfect. Let’s walk through each 8-step checklist item using a Todo App with Authentication as an example. I’ll include statements, code snippets, syntax, and examples so you can copy/adapt for any project.
+
+
+---
+
+1. Goal
+
+Statement:
+“Build a simple Todo application with authentication, where users can sign up, log in, and manage their todos (create, read, update, delete).”
+
+
+---
+
+2. User Stories (Jira tickets)
+
+Write them as Jira-style tickets:
+
+1. T101 - User Registration
+As a user, I want to sign up with email and password so I can create my account.
+
+
+2. T102 - User Login
+As a user, I want to log in with email and password so I can access my todos securely.
+
+
+3. T103 - Create Todo
+As a logged-in user, I want to add a new todo so I can keep track of tasks.
+
+
+4. T104 - View Todos
+As a logged-in user, I want to see all my todos so I can manage them.
+
+
+5. T105 - Update & Delete Todo
+As a logged-in user, I want to edit or delete my todo so I can keep my list up to date.
+
+
+
+
+---
+
+3. Data Model
+
+Entities in MongoDB (Mongoose schema example):
+
+User Model (src/models/User.ts)
+
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+
+const UserSchema = new Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+}, { timestamps: true });
+
+// hash password before save
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+export default model("User", UserSchema);
+
+Todo Model (src/models/Todo.ts)
+
+import { Schema, model } from "mongoose";
+
+const TodoSchema = new Schema({
+  title: { type: String, required: true },
+  completed: { type: Boolean, default: false },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }
+}, { timestamps: true });
+
+export default model("Todo", TodoSchema);
+
+
+---
+
+4. API Contract
+
+Auth
+
+POST /api/auth/signup
+Request:
+
+{ "email": "test@example.com", "password": "secret123" }
+
+Response:
+
+{ "message": "User created successfully" }
+
+POST /api/auth/login
+Request:
+
+{ "email": "test@example.com", "password": "secret123" }
+
+Response:
+
+{ "token": "JWT_TOKEN_STRING" }
+
+
+Todos
+
+GET /api/todos
+Headers: Authorization: Bearer JWT_TOKEN
+Response:
+
+[
+  { "_id": "1", "title": "Learn Node", "completed": false },
+  { "_id": "2", "title": "Learn React", "completed": true }
+]
+
+POST /api/todos
+Request:
+
+{ "title": "New Todo" }
+
+Response:
+
+{ "_id": "3", "title": "New Todo", "completed": false }
+
+PUT /api/todos/:id
+Request:
+
+{ "completed": true }
+
+Response:
+
+{ "_id": "3", "title": "New Todo", "completed": true }
+
+DELETE /api/todos/:id
+Response:
+
+{ "message": "Todo deleted" }
+
+
+
+---
+
+5. Wireframe
+
+(Rough ASCII sketch, real one can be in Figma)
+
++-----------------------+
+|      Login Page       |
+| Email: [___________]  |
+| Pass:  [___________]  |
+| [Login]  [Signup]     |
++-----------------------+
+
++-----------------------+
+|      Todo List        |
+|  [ Add new todo  + ]  |
+|                       |
+|  [ ] Learn Node       |
+|  [x] Learn React      |
+|  (Edit)   (Delete)    |
++-----------------------+
+
+
+---
+
+6. Dev Tasks & Branching
+
+Break Jira stories into dev subtasks:
+
+T101 User Registration
+
+Create User model
+
+Add signup API
+
+Hash passwords
+
+Branch: feature/T101-signup
+
+
+T102 User Login
+
+Add login API
+
+Generate JWT token
+
+Branch: feature/T102-login
+
+
+T103 Create Todo
+
+Create Todo model
+
+Add POST /todos
+
+Branch: feature/T103-add-todo
+
+
+T104 View Todos
+
+Add GET /todos
+
+Branch: feature/T104-view-todos
+
+
+T105 Update/Delete
+
+Add PUT /todos/:id
+
+Add DELETE /todos/:id
+
+Branch: feature/T105-update-delete
+
+
+
+
+---
+
+7. CI & Test
+
+Example Test (Jest + Supertest)
+
+import request from "supertest";
+import app from "../src/app";
+
+describe("Todo API", () => {
+  it("should return 401 if no token", async () => {
+    const res = await request(app).get("/api/todos");
+    expect(res.status).toBe(401);
+  });
+});
+
+Jenkinsfile (snippet)
+
+pipeline {
+  agent any
+  stages {
+    stage('Install') { steps { sh 'npm ci' } }
+    stage('Lint') { steps { sh 'npm run lint' } }
+    stage('Test') { steps { sh 'npm test -- --coverage' } }
+    stage('Build') { steps { sh 'npm run build' } }
+  }
+}
+
+
+---
+
+8. Deploy & Monitor
+
+Docker Compose (local dev)
+
+version: "3.9"
+services:
+  api:
+    build: ./todo-api
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./todo-api/.env
+  web:
+    build: ./todo-web
+    ports:
+      - "3000:80"
+
+AWS Deployment (steps)
+
+1. Push Docker images to ECR.
+
+
+2. Deploy backend container to ECS Fargate or EC2.
+
+
+3. Host frontend on S3 + CloudFront.
+
+
+4. Logs → CloudWatch.
+
+
+5. Monitoring → create alarm for 5xx errors.
+
+
+
+
+---
+
+✅ This checklist now has statements + code + syntax + examples for each step.
+Would you like me to turn this into a full repo scaffold (with files ready to run) so you can git clone, run, and practice from day one?
+
+
+
+
+
+
+
+
+
