@@ -4785,3 +4785,252 @@ This project creates a visualizer for a mock machine learning model’s predicti
   </script>
 </body>
 </html>
+
+Perfect — the image lists **10 real-world React interview scenarios**. Let’s go one by one with **clear answers, explanations, code snippets, and syntax** you can use in interviews.
+
+---
+
+## **1. Infinite Scrolling (LinkedIn-style feed)**
+
+**Approach:** Use `IntersectionObserver` or scroll events with pagination.
+
+```jsx
+import { useEffect, useRef, useState } from "react";
+
+function Feed() {
+  const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState([]);
+  const loader = useRef(null);
+
+  useEffect(() => {
+    fetch(`/api/posts?page=${page}`)
+      .then(res => res.json())
+      .then(data => setPosts(prev => [...prev, ...data]));
+  }, [page]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) setPage(p => p + 1);
+    });
+    if (loader.current) observer.observe(loader.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div>
+      {posts.map(p => <div key={p.id}>{p.text}</div>)}
+      <div ref={loader}>Loading...</div>
+    </div>
+  );
+}
+```
+
+---
+
+## **2. Auto-logout After Inactivity**
+
+**Approach:** Track user activity with `setTimeout`.
+
+```jsx
+import { useEffect } from "react";
+
+function useAutoLogout(logout, timeout = 30 * 60 * 1000) {
+  useEffect(() => {
+    let timer;
+    const reset = () => {
+      clearTimeout(timer);
+      timer = setTimeout(logout, timeout);
+    };
+    window.addEventListener("mousemove", reset);
+    window.addEventListener("keydown", reset);
+    reset();
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("mousemove", reset);
+      window.removeEventListener("keydown", reset);
+    };
+  }, [logout, timeout]);
+}
+```
+
+---
+
+## **3. Internationalization (i18n)**
+
+**Approach:** Use `react-i18next`.
+
+```bash
+npm install react-i18next i18next
+```
+
+```jsx
+import { useTranslation } from "react-i18next";
+
+function App() {
+  const { t, i18n } = useTranslation();
+  return (
+    <div>
+      <button onClick={() => i18n.changeLanguage("fr")}>FR</button>
+      <button onClick={() => i18n.changeLanguage("en")}>EN</button>
+      <p>{t("welcome_message")}</p>
+    </div>
+  );
+}
+```
+
+`locales/en.json`
+
+```json
+{ "welcome_message": "Hello!" }
+```
+
+---
+
+## **4. Large File Uploads**
+
+**Approach:** Use **chunked uploads** and progress tracking.
+
+```jsx
+async function uploadFile(file) {
+  const chunkSize = 5 * 1024 * 1024; // 5MB
+  for (let start = 0; start < file.size; start += chunkSize) {
+    const chunk = file.slice(start, start + chunkSize);
+    const formData = new FormData();
+    formData.append("file", chunk);
+    await fetch("/api/upload", { method: "POST", body: formData });
+  }
+}
+```
+
+---
+
+## **5. SEO for React SPA**
+
+**Problem:** Google not indexing SPA.
+**Solution:** Use **Server-Side Rendering (Next.js)** or **React Helmet** for meta tags.
+
+```jsx
+import { Helmet } from "react-helmet";
+
+function SEOPage() {
+  return (
+    <>
+      <Helmet>
+        <title>My Page</title>
+        <meta name="description" content="SEO description here" />
+      </Helmet>
+      <h1>Content</h1>
+    </>
+  );
+}
+```
+
+---
+
+## **6. Stale Closures in useEffect**
+
+**Problem:** Callback in useEffect using old state.
+**Solution:** Use function updater or refs.
+
+```jsx
+const [count, setCount] = useState(0);
+
+useEffect(() => {
+  const id = setInterval(() => {
+    setCount(c => c + 1); // ✅ function updater fixes stale closure
+  }, 1000);
+  return () => clearInterval(id);
+}, []);
+```
+
+---
+
+## **7. Bundle Too Large**
+
+**Approach:** Code splitting + lazy loading.
+
+```jsx
+import React, { Suspense, lazy } from "react";
+const Profile = lazy(() => import("./Profile"));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Profile />
+    </Suspense>
+  );
+}
+```
+
+* Use `webpack-bundle-analyzer` to check sizes.
+* Use `tree-shaking`, remove unused libs.
+
+---
+
+## **8. Role-Based Routes**
+
+**Approach:** Wrap `Route` with auth check.
+
+```jsx
+import { Navigate } from "react-router-dom";
+
+function PrivateRoute({ children, role, allowed }) {
+  if (!allowed.includes(role)) return <Navigate to="/unauthorized" />;
+  return children;
+}
+```
+
+```jsx
+<Route path="/admin" element={
+  <PrivateRoute role={user.role} allowed={["admin"]}>
+    <AdminPage />
+  </PrivateRoute>
+} />
+```
+
+---
+
+## **9. Smooth Page Transitions**
+
+**Approach:** Use **Framer Motion**.
+
+```bash
+npm install framer-motion
+```
+
+```jsx
+import { motion } from "framer-motion";
+
+function Page() {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <h1>Welcome</h1>
+    </motion.div>
+  );
+}
+```
+
+---
+
+## **10. API Rate Limit / Throttling**
+
+**Approach:** Use `lodash.throttle` or custom logic.
+
+```bash
+npm install lodash
+```
+
+```jsx
+import { throttle } from "lodash";
+
+const fetchData = throttle(() => {
+  fetch("/api/data").then(r => r.json()).then(console.log);
+}, 2000); // 1 call per 2s
+```
+
+---
+
+✅ With these **answers + code**, you can confidently explain solutions in interviews.
+
+Do you want me to also create a **full GitHub repo with these 10 scenarios coded in React** (so you can practice running them)?
+
