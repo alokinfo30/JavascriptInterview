@@ -1,10 +1,10 @@
-👉 “ASCENDERS-BASL”
+👉 “ASCENDERS-BASSCL”
 
 Why this works:
 
 * Uses all the letters in order.
 * **ASCENDERS** is already a real word (part of typography, also means “rising upward”).
-* Then add **BASL** at the end (you can remember it as **Bulkhead, API, Strangler, Leader**).
+* Then add **BASSCL** at the end (you can remember it as **Bulkhead, API, Strangler, Leader**).
 
 So the full acronym:
 
@@ -18,7 +18,14 @@ So the full acronym:
 * **R**etry
 * **S**idecar
 
-Then **BASL** for the rest.
+Then **BASSCL** for the rest.
+B -> Bulk overhead 
+A -> Api composition 
+S -> Saga
+S -> Strangler fig
+C -> CQRS
+L-> Leader Election
+
 
 ---
 
