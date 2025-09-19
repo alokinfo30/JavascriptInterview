@@ -1,4 +1,6 @@
-AWS Lambda is a versatile serverless compute service that enables you to run code without provisioning or managing servers. It automatically scales your applications in response to incoming requests or events, and you pay only for the compute time you consume. Below is a detailed overview of AWS Lambda use cases, categorized for clarity:
+AWS Lambda is a versatile serverless compute service that enables you to run code without provisioning or managing servers. It automatically scales your applications in response to incoming requests or events, and you pay only for the compute time you consume. 
+
+AWS Lambda use cases
 
 DATA-CHAIN
 
