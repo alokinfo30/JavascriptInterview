@@ -1,5 +1,27 @@
 AWS Lambda is a versatile serverless compute service that enables you to run code without provisioning or managing servers. It automatically scales your applications in response to incoming requests or events, and you pay only for the compute time you consume. Below is a detailed overview of AWS Lambda use cases, categorized for clarity:
 
+DATA-CHAIN
+
+(emphasizes flow of data + intelligence across systems)
+
+D → Data Warehousing & ETL
+
+A → Automated Backups and Scheduled Tasks
+
+T → Transformation (File and Data)
+
+A → API Backends and Web Applications
+
+C → Compliance & Security Monitoring
+
+H → High-Performance Computing
+
+A → AI (Generative + NLP)
+
+I → Intelligent Event-Driven Architectures
+
+N → Natural Language Processing & Chatbots
+
 ---
 
 🔄 1. Real-Time Data Processing
