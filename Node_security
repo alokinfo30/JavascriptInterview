@@ -1,3 +1,51 @@
+DATA SHIELDS: Node.js Security Mnemonic
+
+D – Dependencies
+Keep packages safe, audit regularly, remove unused ones.
+
+A – Auth (Authentication & Authorization)
+Use JWT, OAuth, RBAC, and rate limiting for logins.
+
+T – Testing
+Do pen tests, SAST/DAST scans, and continuous vulnerability checks.
+
+A – API
+Secure APIs with HTTPS, payload limits, and header validation.
+
+S – Secrets
+No hardcoding, use env vars and secrets managers.
+
+H – Headers
+Use Helmet.js for CSP, HSTS, and anti-MIME sniffing.
+
+I – Injection
+Prevent SQL/NoSQL injection with parameterized queries and sanitization.
+
+E – Error & Logging
+No sensitive error leaks, use structured centralized logging.
+
+L – Logging
+(Emphasize again: Winston, Pino, real-time monitoring).
+
+D – DoS
+Rate-limit requests, limit payload sizes, avoid blocking event loop.
+
+S – Sessions
+Secure cookies, rotate keys, invalidate old sessions.
+
+V – Validation
+Validate and sanitize every user input.
+
+U – Uploads
+Restrict file types, sanitize names, prefer cloud storage.
+
+B – Best Practices
+Avoid eval, use eslint security plugins, strong TLS/SSL.
+
+
+
+
+
 Certainly! Here is a comprehensive guide to Node.js security best practices in 2025, drawing from the latest vulnerabilities and expert recommendations:
 
 🔐 Node.js Security: Comprehensive Best Practices for 2025
