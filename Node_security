@@ -42,6 +42,11 @@ Restrict file types, sanitize names, prefer cloud storage.
 B – Best Practices
 Avoid eval, use eslint security plugins, strong TLS/SSL.
 
+U – Updates
+Keep Node.js and dependencies patched against CVEs.
+
+T – Traversal
+Mitigate path traversal with patched Node.js and secure path libraries.
 
 
 
