@@ -54,31 +54,44 @@ Mitigate path traversal with patched Node.js and secure path libraries.
 SAFE BUILT DASH: Node.js Security Mnemonic
 
 
-Secrets
+S – Secrets
+No hardcoding, use env vars and secrets managers.
 
-Auth
+A – Auth (Authentication & Authorization)
+Use JWT, OAuth, RBAC, and rate limiting for logins.
 
-File Uploads
+F - File Uploads
+Restrict file types, sanitize names, prefer cloud storage.
 
-Errors/Logging
+E – Error & Logging
+No sensitive error leaks, use structured centralized logging.
 
-Best-Practices
+B – Best Practices
+Avoid eval, use eslint security plugins, strong TLS/SSL.
 
-Updates
+U – Updates
+Keep Node.js and dependencies patched against CVEs.
 
-Injection
+I – Injection
+Prevent SQL/NoSQL injection with parameterized queries and sanitization.
 
-Logging
+L – Logging
+(Emphasize again: Winston, Pino, real-time monitoring).
 
-Testing
+T – Testing
+Do pen tests, SAST/DAST scans, and continuous vulnerability checks.
 
-Dependencies
+D – Dependencies
+Keep packages safe, audit regularly, remove unused ones.
 
-API
+A – API
+Secure APIs with HTTPS, payload limits, and header validation.
 
-Sessions
+S – Sessions
+Secure cookies, rotate keys, invalidate old sessions.
 
-Headers
+H – Headers
+Use Helmet.js for CSP, HSTS, and anti-MIME sniffing.
 (Traversal & DoS can sit under T/H)
 
 
