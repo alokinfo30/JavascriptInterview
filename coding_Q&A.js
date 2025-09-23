@@ -1,6 +1,22 @@
 
 // Without using BUILT-IN Methods
 
+
+let s = "Hello Welcome to Javascript";
+let r = "";
+let w = "";
+ for (let i = 0; i <= s.length; i++) {
+     if (s[i] !== " " && i !== s.length) {
+         w = s[i] + w;
+     } else {
+         r += w + " ";
+     
+     w = "";
+ }
+ }
+ 
+ r = r.trim();
+ console.log(r);
 Convert Nested Object to Simple Object (Without Functions)
 
 Here are several ways to convert a nested object into a simple flat object using dot notation, without using any functions:
@@ -1217,6 +1233,7 @@ function printPattern(n, current = n) {
 
 // Call the function with the input parameter 5
 printPattern(5);
+
 
 
 
