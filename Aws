@@ -164,6 +164,30 @@ For more details, you can explore the AWS Lambda Documentation or refer to custo
 
 
 
+
+Core Services
+
+Amazon EC2 provides resizable virtual servers, offering complete control over computing resources and the ability to scale capacity as needed.
+Amazon S3 is a durable and highly available object storage service designed to store and retrieve any amount of data from anywhere, forming the backbone for data lakes, 
+static websites, and backups. Understanding the global infrastructure is key; AWS Regions are geographic locations containing multiple, isolated Availability Zones, 
+which are physical data centers with redundant power and networking to ensure high availability and fault tolerance for deployed applications.
+
+Security & Identity
+
+ AWS Identity and Access Management (IAM) is the core service for controlling secure access to AWS resources by managing users, groups, roles, and their permissions through policies. 
+This is underpinned by the AWS Shared Responsibility Model, which delineates that AWS is responsible for the security of the cloud, meaning the infrastructure, while the customer is responsible
+for security in the cloud, encompassing customer data, IAM configuration, and operating system and network security.
+
+Architecture & Design
+
+AWS Lambda enables serverless computing by allowing code execution without provisioning servers, scaling automatically and charging only for compute time consumed. For network isolation,
+Amazon VPC is used to launch AWS resources into a logically defined virtual network, giving the developer control over IP ranges, subnets, route tables, and gateways. Furthermore, a critical operational
+distinction is between stopping and terminating an EC2 instance; stopping is akin to shutting down a computer where the instance can be restarted, preserving the root volume, while terminating is equivalent to destruction, where the instance is permanently deleted and its attached storage may be lost unless configured for persistence.
+
+
+
+
+
 When to Use Merge vs. Rebase
 
 Use Merge when:
