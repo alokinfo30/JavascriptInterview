@@ -491,16 +491,14 @@ client = boto3.client("bedrock-runtime")
 # Define a Bedrock model ID
 MODEL_ID = "us.anthropic.claude-sonnet-4-20250514-v1:0"
 
-# TODO: Create the user message asking about cloud computing benefits
-# The messages should be a list with a dictionary containing "role" and "content" fields
-# The content should be a list with a dictionary containing a "text" field
+# Create the user message asking for AWS compute recommendations
 messages = [
     {
         "role": "user",
         "content": [
             {
                 "text": (
-                    "Explain to a beginner what is AWS cloud computing."
+                    "Explain to a beginner what is AWS Bedrock."
                 )
             }
         ],
@@ -514,24 +512,28 @@ try:
         messages=messages
     )
 
-    # Get the output message from response
-    output_message = response.get("output", {}).get("message", {})
-    
-    # Get the content parts from the message
-    parts = output_message.get("content", [])
-    
-    # Extract text from each content part
-    text_chunks = [part.get("text", "") for part in parts if isinstance(part, dict)]
-
-    # Join all text chunks into a single response
-    full_response = "".join(text_chunks).strip()
-
-    # Print the AI's response
-    print(full_response)
+    # TODO: Extract the output message from the response
+    # TODO: Get the content parts from the message
+    # TODO: Extract text from each content part and join them
+    # TODO: Print the AI's response
     
 except Exception as e:
     print(f"Error: {e}")
+    
+    # Get the output message from response
+output_message = response.get("output", {}).get("message", {})
 
+# Get the content parts from the message
+parts = output_message.get("content", [])
+
+# Extract text from each content part
+text_chunks = [part.get("text", "") for part in parts if isinstance(part, dict)]
+
+# Join all text chunks into a single response
+full_response = "".join(text_chunks).strip()
+
+# Print the AI's response
+print(full_response)
 
 
 output: # AWS Cloud Computing: A Beginner's Guide
