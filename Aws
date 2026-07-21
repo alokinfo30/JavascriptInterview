@@ -416,3 +416,177 @@ Use Rebase when:
 · You are working on a local feature branch and want to incorporate the latest changes from main to keep your branch up-to-date. This is the most common use case.
   · Instead of git merge main, do git rebase main. This puts your neat feature work on top of the latest main code, avoiding a merge commit.
 · You want to clean up and simplify your local commit history
+
+
+
+
+AWS BEDROCK
+
+
+
+
+
+
+Here's a summary and key points from the course content.
+
+## Summary
+
+This is the first lesson in a four-course AWS/Amazon learning path on building generative AI applications with Amazon Bedrock. It introduces what Bedrock is, its core capabilities, the AWS IAM permissions needed to use it, and walks through creating your first Bedrock client connection using Python's boto3 SDK. The lesson assumes basic Python and cloud/API familiarity, and sets up the foundation for later lessons covering knowledge bases, agents, and production deployment.
+
+## Key Points
+
+**Learning Path Structure**
+- Four courses total: (1) Foundation Models with Bedrock, (2) Data/Knowledge Bases with RAG, (3) Building agents with Strands Agents, (4) Deploying agents with Bedrock AgentCore
+- End goal: build, deploy production-ready AI apps with natural language understanding, external knowledge retrieval, task execution, and conversational memory
+- Prerequisites: Python (functions, OOP, error handling), cloud computing basics, some API experience
+
+**What is AWS Bedrock**
+- A serverless "AI marketplace" providing access to foundation models from Anthropic, AI21 Labs, Cohere, Meta, and Amazon
+- No infrastructure management or model training required
+- Pay-as-you-go pricing based on token usage
+- Removes traditional barriers to AI adoption for developers/businesses
+
+**Core Capabilities**
+- Text generation (content, emails, marketing copy)
+- Conversational AI (chatbots, virtual assistants with context)
+- Text analysis (summarization, sentiment, document processing)
+- Multimodal features (image generation/analysis, code assistance)
+
+**AWS IAM (Identity and Access Management)**
+- Security foundation controlling who can access what
+- Built on users, roles, and policies
+- Operates on **principle of least privilege** — grant only minimum necessary permissions
+- Determines both service access and which models/operations are permitted
+
+**Credentials Setup**
+- Pre-configured automatically in the course's CodeSignal environment — no action needed
+- On personal machines: must configure via AWS Console, CLI, or environment variables
+- SDK auto-detects credentials from standard locations
+
+**Key Permissions for Bedrock**
+- `bedrock:InvokeModel` — essential permission to send requests/receive responses
+- `bedrock:GetFoundationModel` — optional, for retrieving model metadata
+- **Model access is separate from IAM** — must be explicitly enabled per-model in the Bedrock console under "Model access"
+- Not all models are enabled by default (especially newer/more powerful ones)
+- Region choice affects model availability — **us-east-1 (N. Virginia)** has the broadest model selection
+
+**First Bedrock Connection (Code)**
+```python
+import boto3
+client = boto3.client("bedrock-runtime")
+```
+- "bedrock-runtime" = API for actual model inference (distinct from management/admin APIs)
+- Client automatically pulls credentials from the environment (CLI config, env variables, or IAM roles)
+
+
+
+
+PRACTICAL EXAMPLE
+
+import boto3
+
+# Create a Bedrock Runtime client with your default region (us-east-1)
+client = boto3.client("bedrock-runtime")
+
+# Define a Bedrock model ID
+MODEL_ID = "us.anthropic.claude-sonnet-4-20250514-v1:0"
+
+# TODO: Create the user message asking about cloud computing benefits
+# The messages should be a list with a dictionary containing "role" and "content" fields
+# The content should be a list with a dictionary containing a "text" field
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "text": (
+                    "Explain to a beginner what is AWS cloud computing."
+                )
+            }
+        ],
+    },
+]
+
+try:
+    # Call Bedrock model using the converse method
+    response = client.converse(
+        modelId=MODEL_ID,
+        messages=messages
+    )
+
+    # Get the output message from response
+    output_message = response.get("output", {}).get("message", {})
+    
+    # Get the content parts from the message
+    parts = output_message.get("content", [])
+    
+    # Extract text from each content part
+    text_chunks = [part.get("text", "") for part in parts if isinstance(part, dict)]
+
+    # Join all text chunks into a single response
+    full_response = "".join(text_chunks).strip()
+
+    # Print the AI's response
+    print(full_response)
+    
+except Exception as e:
+    print(f"Error: {e}")
+
+
+
+output: # AWS Cloud Computing: A Beginner's Guide
+
+## What is Cloud Computing?
+
+Imagine you need a powerful computer to run your business, but instead of buying expensive hardware and keeping it in your office, you "rent" computing power over the internet. That's essentially what cloud computing is - using someone else's computers and servers through the internet to store data, run applications, and perform computing tasks.
+
+## What is AWS?
+
+**Amazon Web Services (AWS)** is like a giant digital toolbox owned by Amazon. It's the world's largest cloud computing platform that offers hundreds of different services to help businesses and individuals build and run applications online.
+
+Think of AWS as a massive digital infrastructure that you can access from anywhere in the world, just like how you can access your email from any device with internet.
+
+## Key Benefits of AWS Cloud Computing
+
+### 1. **No Upfront Costs**
+- Instead of buying expensive servers (which can cost thousands), you pay only for what you use
+- Like renting a car vs. buying one - you get what you need without the huge initial investment
+
+### 2. **Scalability**
+- If your business grows and you need more computing power, you can get it instantly
+- If you need less, you can scale down - you're never stuck with unused resources
+
+### 3. **Reliability**
+- AWS has data centers worldwide with backup systems
+- If one server fails, others automatically take over
+
+### 4. **Global Reach**
+- Your applications can be available worldwide in minutes
+- Users get faster performance because data is served from nearby locations
+
+## Common AWS Services (Simplified)
+
+- **EC2**: Virtual computers you can rent by the hour
+- **S3**: Digital storage space for files, photos, videos, etc.
+- **RDS**: Managed databases to store and organize information
+- **Lambda**: Run code without managing servers
+
+## Real-World Example
+
+Let's say you want to start an online photo-sharing app:
+
+**Traditional Way**: Buy servers ($10,000+), hire IT staff, set up security, manage backups
+**AWS Way**: Rent virtual servers for $10/month, use AWS's built-in security and backup systems, scale up as you get more users
+
+## Who Uses AWS?
+
+- **Startups**: Get enterprise-level technology without huge costs
+- **Large Companies**: Netflix, Airbnb, NASA use AWS
+- **Developers**: Build and test applications quickly
+- **Students**: Learn technology skills with free tiers
+
+## Getting Started
+
+AWS offers a "Free Tier" that lets beginners explore many services at no cost for 12 months - perfect for learning!
+
+The key takeaway: AWS makes powerful computing technology accessible to everyone, whether you're building the next big app or just learning about technology.
